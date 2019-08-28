@@ -15,7 +15,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Pixama.App.Services;
 using Pixama.ViewModels.Services;
-using Pixama.ViewModels.ViewModels.Shell;
+using Pixama.ViewModels.Shell;
 using ReactiveUI;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238

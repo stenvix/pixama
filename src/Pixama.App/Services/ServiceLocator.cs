@@ -1,8 +1,8 @@
 ﻿using Autofac;
-using Pixama.ViewModels.ViewModels.Photo;
 using System.Collections.Concurrent;
 using Windows.UI.ViewManagement;
-using Pixama.ViewModels.ViewModels.Shell;
+using Pixama.ViewModels.Photo;
+using Pixama.ViewModels.Shell;
 
 namespace Pixama.App.Services
 {
@@ -28,11 +28,10 @@ namespace Pixama.App.Services
             var builder = new ContainerBuilder();
             builder.RegisterType<FrameAdapter>().AsImplementedInterfaces().SingleInstance();
             builder.RegisterType<NavigationService>().AsImplementedInterfaces().SingleInstance();
-            //builder.RegisterType<FileSystemService>().AsImplementedInterfaces().SingleInstance();
-            //builder.RegisterType<PhotoService>().AsImplementedInterfaces().SingleInstance();
+            builder.RegisterType<FileSystemService>().AsImplementedInterfaces().SingleInstance();
+
             builder.RegisterType<ShellViewModel>().InstancePerLifetimeScope();
             builder.RegisterType<PhotoViewModel>().InstancePerLifetimeScope();
-            //builder.RegisterType<PhotoGridViewModel>().InstancePerLifetimeScope();
             _container = builder.Build();
         }
 

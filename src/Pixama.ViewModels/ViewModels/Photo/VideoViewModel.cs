@@ -1,4 +1,4 @@
-﻿namespace Pixama.ViewModels.ViewModels.Photo
+﻿namespace Pixama.ViewModels.Photo
 {
     public class VideoViewModel : BaseViewModel
     {

@@ -5,20 +5,29 @@
     xmlns:local="using:Pixama.App.Views.Photo"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:common="using:Pixama.ViewModels.Common"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="350"/>
+            <ColumnDefinition Width="225"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="225"/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel>
+        <StackPanel x:Name="Sidebar">
             <TextBlock Margin="10" Text="Locations" FontSize="14" FontWeight="Bold" Padding="0" VerticalAlignment="Stretch"/>
-            <ListView>
-                <ListView.Items>
+            <ListView x:Name="Folders">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="common:FolderViewModel">
+                        <StackPanel Spacing="15" Orientation="Horizontal">
+                            <FontIcon FontSize="16" Glyph="{x:Bind Glyph}" FontFamily="Segoe MDL2 Assets"/>
+                            <TextBlock Text="{x:Bind Name}" FontSize="12"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <!--<ListView.Items>
                     <ListViewItem Tag="Desktop">
                         <ListViewItem.Content>
                             <StackPanel Spacing="15" Orientation="Horizontal">
@@ -51,9 +60,21 @@
                             </StackPanel>
                         </ListViewItem.Content>
                     </ListViewItem>
-                </ListView.Items>
+                </ListView.Items>-->
             </ListView>
             <TextBlock Margin="10" Text="Drives" FontSize="14" FontWeight="Bold" Padding="0" VerticalAlignment="Stretch"/>
+            <ListView x:Name="Drives">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="common:DriveViewModel">
+                        <StackPanel Spacing="15" Orientation="Horizontal">
+                            <FontIcon FontSize="16" Glyph="{x:Bind Glyph}" FontFamily="Segoe MDL2 Assets"/>
+                            <TextBlock Text="{x:Bind Name}" FontSize="12"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </StackPanel>
+
+        <ProgressRing x:Name="ProgressRing" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center" Height="70" Width="70" IsActive="True"></ProgressRing>
     </Grid>
 </Page>

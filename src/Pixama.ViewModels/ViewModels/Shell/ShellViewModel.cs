@@ -1,12 +1,12 @@
-﻿using Pixama.ViewModels.Services;
-using Pixama.ViewModels.ViewModels.Photo;
-using ReactiveUI;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using Pixama.ViewModels.Photo;
+using Pixama.ViewModels.Services;
+using ReactiveUI;
 
-namespace Pixama.ViewModels.ViewModels.Shell
+namespace Pixama.ViewModels.Shell
 {
     public class ShellViewModel : BaseViewModel
     {
