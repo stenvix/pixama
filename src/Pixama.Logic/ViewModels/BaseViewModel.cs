@@ -1,8 +1,8 @@
-﻿using ReactiveUI;
-using System.Reactive.Linq;
+﻿using System.Reactive.Linq;
 using System.Threading.Tasks;
+using ReactiveUI;
 
-namespace Pixama.ViewModels
+namespace Pixama.Logic.ViewModels
 {
     public abstract class BaseViewModel : ReactiveObject
     {

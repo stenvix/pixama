@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Pixama.ViewModels.Services
+namespace Pixama.Logic.Services
 {
     public interface INavigationService
     {

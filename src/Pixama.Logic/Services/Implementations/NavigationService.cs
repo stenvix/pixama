@@ -1,10 +1,10 @@
-﻿using Microsoft.Toolkit.Uwp.Helpers;
-using Pixama.ViewModels.Services;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using Windows.UI.Core;
+using Windows.UI.Xaml;
 
-namespace Pixama.App.Services
+namespace Pixama.Logic.Services
 {
     public class NavigationService : INavigationService
     {
@@ -47,10 +47,10 @@ namespace Pixama.App.Services
         {
             if (!_frameAdapter.CanNavigate) return false;
             var navigated = false;
-            await DispatcherHelper.ExecuteOnUIThreadAsync(() =>
-            {
-                navigated = _frameAdapter.Navigate(GetView(typeof(TViewModel)), parameters);
-            });
+            await Window.Current.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+             {
+                 navigated = _frameAdapter.Navigate(GetView(typeof(TViewModel)), parameters);
+             });
             return navigated;
         }
 

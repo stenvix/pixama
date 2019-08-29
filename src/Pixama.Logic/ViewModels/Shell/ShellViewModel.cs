@@ -2,11 +2,11 @@
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using Pixama.ViewModels.Photo;
-using Pixama.ViewModels.Services;
+using Pixama.Logic.Services;
+using Pixama.Logic.ViewModels.Photo;
 using ReactiveUI;
 
-namespace Pixama.ViewModels.Shell
+namespace Pixama.Logic.ViewModels.Shell
 {
     public class ShellViewModel : BaseViewModel
     {

@@ -1,14 +1,14 @@
-﻿using Pixama.App.Services;
-using Pixama.App.Views;
+﻿using Pixama.App.Views;
 using Pixama.App.Views.Photo;
+using Pixama.App.Views.Video;
+using Pixama.Logic.Services;
+using Pixama.Logic.ViewModels.Photo;
 using System;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using Pixama.App.Views.Video;
-using Pixama.ViewModels.Photo;
 
 namespace Pixama.App
 {

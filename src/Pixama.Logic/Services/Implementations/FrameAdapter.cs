@@ -1,8 +1,7 @@
-﻿using Pixama.ViewModels.Services;
-using System;
+﻿using System;
 using Windows.UI.Xaml.Controls;
 
-namespace Pixama.App.Services
+namespace Pixama.Logic.Services
 {
     public class FrameAdapter : IFrameAdapter
     {

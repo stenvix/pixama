@@ -1,7 +1,7 @@
 ﻿using System;
 using ReactiveUI;
 
-namespace Pixama.ViewModels.Shell
+namespace Pixama.Logic.ViewModels.Shell
 {
     public class ShellMenuItemViewModel : BaseViewModel
     {
