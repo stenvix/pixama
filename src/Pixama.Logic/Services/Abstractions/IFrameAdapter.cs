@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Pixama.ViewModels.Services
+namespace Pixama.Logic.Services
 {
     public interface IFrameAdapter
     {

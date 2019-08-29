@@ -1,10 +1,11 @@
 ﻿using Autofac;
+using Pixama.Logic.Services;
+using Pixama.Logic.ViewModels.Photo;
+using Pixama.Logic.ViewModels.Shell;
 using System.Collections.Concurrent;
 using Windows.UI.ViewManagement;
-using Pixama.ViewModels.Photo;
-using Pixama.ViewModels.Shell;
 
-namespace Pixama.App.Services
+namespace Pixama.App.Configuration
 {
     public class ServiceLocator
     {
@@ -28,7 +29,8 @@ namespace Pixama.App.Services
             var builder = new ContainerBuilder();
             builder.RegisterType<FrameAdapter>().AsImplementedInterfaces().SingleInstance();
             builder.RegisterType<NavigationService>().AsImplementedInterfaces().SingleInstance();
-            builder.RegisterType<FileSystemService>().AsImplementedInterfaces().SingleInstance();
+            builder.RegisterType<DriveService>().AsImplementedInterfaces().SingleInstance();
+            builder.RegisterType<FolderService>().AsImplementedInterfaces().SingleInstance();
 
             builder.RegisterType<ShellViewModel>().InstancePerLifetimeScope();
             builder.RegisterType<PhotoViewModel>().InstancePerLifetimeScope();

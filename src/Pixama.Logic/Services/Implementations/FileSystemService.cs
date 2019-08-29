@@ -1,38 +1,37 @@
-﻿using DynamicData;
-using Pixama.ViewModels.Common;
-using Pixama.ViewModels.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Storage;
+using DynamicData;
+using Pixama.Logic.ViewModels.Common;
 
-namespace Pixama.App.Services
+namespace Pixama.Logic.Services
 {
     public class FileSystemService : IFileSystemService
     {
-        public Task GetFolders(SourceList<FolderViewModel> foldersList)
+        public Task GetFolders(SourceList<StorageLocationViewModel> foldersList)
         {
             foldersList.Edit(list =>
             {
                 list.Clear();
-                list.Add(new FolderViewModel("Desktop", Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "\uE8FC"));
-                list.Add(new FolderViewModel("Downloads", Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\Downloads", "\uE896"));
-                list.Add(new FolderViewModel("Documents", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "\uE8A5"));
-                list.Add(new FolderViewModel("Pictures", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "\uE8A5"));
-                list.Add(new FolderViewModel("Videos", Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "\uE8A5"));
+                //list.Add(new StorageLocationViewModel("Desktop", Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "\uE8FC"));
+                //list.Add(new StorageLocationViewModel("Downloads", Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\Downloads", "\uE896"));
+                //list.Add(new StorageLocationViewModel("Documents", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "\uE8A5"));
+                //list.Add(new StorageLocationViewModel("Pictures", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "\uE8A5"));
+                //list.Add(new StorageLocationViewModel("Videos", Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "\uE8A5"));
             });
 
             return Task.CompletedTask;
         }
 
-        public async Task GetDrives(SourceList<DriveViewModel> drivesList)
+        public async Task GetDrives(SourceList<StorageLocationViewModel> drivesList)
         {
             var drives = DriveInfo.GetDrives();
             var removable = await KnownFolders.RemovableDevices.GetFoldersAsync();
             var removableDrives = removable.Select(i => i.Name).ToList();
-            var driveModels = new List<DriveViewModel>();
+            var driveModels = new List<StorageLocationViewModel>();
 
             foreach (var drive in drives)
             {
@@ -41,8 +40,8 @@ namespace Pixama.App.Services
                 var name = GetName(drive.Name, driveType);
                 var glyph = GetGlyph(driveType);
 
-                var model = new DriveViewModel(name, drive.RootDirectory.Root.FullName, glyph);
-                driveModels.Add(model);
+                //var model = new StorageLocationViewModel(name, drive.RootDirectory.Root.FullName, glyph);
+                //driveModels.Add(model);
             }
 
             drivesList.Edit(models =>

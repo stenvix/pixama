@@ -1,9 +1,9 @@
-﻿using System.Reactive.Disposables;
+﻿using Pixama.App.Configuration;
+using Pixama.Logic.ViewModels.Photo;
+using ReactiveUI;
+using System.Reactive.Disposables;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Pixama.App.Services;
-using Pixama.ViewModels.Photo;
-using ReactiveUI;
 
 namespace Pixama.App.Views.Photo
 {
@@ -32,6 +32,7 @@ namespace Pixama.App.Views.Photo
         {
             ViewModel = ServiceLocator.Current.GetService<PhotoViewModel>();
             Loading += OnLoading;
+            Unloaded += OnUnloaded;
             InitializeComponent();
             this.WhenActivated(disposable =>
             {
@@ -51,6 +52,14 @@ namespace Pixama.App.Views.Photo
                     .DisposeWith(disposable);
 
                 this.OneWayBind(ViewModel,
+                    vm => vm.HasRemovableDrive,
+                    v => v.Drives.Visibility);
+
+                this.OneWayBind(ViewModel,
+                    vm => vm.HasRemovableDrive,
+                    v => v.DrivesLabel.Visibility);
+
+                this.OneWayBind(ViewModel,
                         vm => vm.Drives,
                         v => v.Drives.ItemsSource)
                     .DisposeWith(disposable);
@@ -68,6 +77,14 @@ namespace Pixama.App.Views.Photo
         private async void OnLoading(FrameworkElement sender, object args)
         {
             await ViewModel.LoadAsync();
+            ViewModel.StartDevicesTracking();
         }
+
+        private void OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            ViewModel.StopDevicesTracking();
+        }
+
+        private void OnAddFolderClick(object sender, ItemClickEventArgs e) => ViewModel.AddFolderCommand.Execute();
     }
 }
