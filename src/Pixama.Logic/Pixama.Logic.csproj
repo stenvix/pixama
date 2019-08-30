@@ -132,6 +132,8 @@
     <Compile Include="Services\Implementations\NavigationService.cs" />
     <Compile Include="Services\Abstractions\INavigationService.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
+    <Compile Include="ViewModels\Common\DriveLocationViewModel.cs" />
+    <Compile Include="ViewModels\Common\DriveViewModel.cs" />
     <Compile Include="ViewModels\Common\StorageLocationType.cs" />
     <Compile Include="ViewModels\Common\StorageLocationViewModel.cs" />
     <Compile Include="ViewModels\Photo\PhotoViewModel.cs" />
