@@ -6,8 +6,4 @@
     xmlns:common="using:Pixama.Logic.ViewModels.Common"
     xmlns:Custom="using:Pixama.App.Views.Photo">
 
-    <Application.Resources>
-        <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls"/>
-    </Application.Resources>
-
 </Application>
