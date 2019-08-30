@@ -17,23 +17,23 @@ namespace Pixama.Logic.ViewModels.Photo
 
         private readonly IFolderService _folderService;
         private readonly IDriveService _driveService;
+        private readonly DeviceWatcher _devicesWatcher;
         private readonly ObservableAsPropertyHelper<bool> _hasRemovableDrives;
-        private readonly SourceList<StorageLocationViewModel> _drivesList;
+        private readonly SourceList<DriveViewModel> _drivesList;
         private readonly SourceList<StorageLocationViewModel> _foldersList;
-        private readonly ReadOnlyObservableCollection<StorageLocationViewModel> _drives;
+        private readonly ReadOnlyObservableCollection<DriveViewModel> _drives;
         private readonly ReadOnlyObservableCollection<StorageLocationViewModel> _folders;
         private StorageLocationViewModel _selectedDrive;
         private StorageLocationViewModel _selectedFolder;
 
         public ReactiveCommand<Unit, Unit> AddFolderCommand;
-        private DeviceWatcher _devicesWatcher;
 
         #endregion
 
         #region Properties
 
         public bool HasRemovableDrive => _hasRemovableDrives.Value;
-        public ReadOnlyObservableCollection<StorageLocationViewModel> Drives => _drives;
+        public ReadOnlyObservableCollection<DriveViewModel> Drives => _drives;
         public ReadOnlyObservableCollection<StorageLocationViewModel> Folders => _folders;
 
         public StorageLocationViewModel SelectedDrive
@@ -62,7 +62,7 @@ namespace Pixama.Logic.ViewModels.Photo
         {
             _folderService = folderService;
             _driveService = driveService;
-            _drivesList = new SourceList<StorageLocationViewModel>();
+            _drivesList = new SourceList<DriveViewModel>();
             _foldersList = new SourceList<StorageLocationViewModel>();
             _devicesWatcher = DeviceInformation.CreateWatcher(DeviceClass.PortableStorageDevice);
             _devicesWatcher.Added += OnDeviceChanged;
@@ -92,7 +92,7 @@ namespace Pixama.Logic.ViewModels.Photo
         {
             IsLoading = true;
             await _folderService.GetFolders(_foldersList);
-            await _driveService.GetDrives(_drivesList);
+            //await _driveService.GetDrives(_drivesList);
             IsLoading = false;
         }
 

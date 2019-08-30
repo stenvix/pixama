@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:common="using:Pixama.Logic.ViewModels.Common"
+    xmlns:photo="using:Pixama.App.Views.Photo"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -15,43 +16,51 @@
             <ColumnDefinition Width="225"/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel x:Name="Sidebar">
-            <TextBlock Margin="10" Text="Locations" FontSize="14" FontWeight="Bold" Padding="0" VerticalAlignment="Stretch"/>
-            <ListView x:Name="Folders">
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="common:StorageLocationViewModel">
-                        <StackPanel Spacing="15" Orientation="Horizontal">
-                            <FontIcon FontSize="16" Glyph="{x:Bind Glyph}" FontFamily="Segoe MDL2 Assets"/>
-                            <TextBlock Text="{x:Bind Name}" FontSize="12"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            <ListView SelectionMode="None" IsItemClickEnabled="True" ItemClick="OnAddFolderClick">
-                <ListView.Items>
-                    <ListViewItem>
-                        <StackPanel Spacing="15" Orientation="Horizontal">
-                            <FontIcon FontSize="16" Glyph="&#xE710;" FontFamily="Segoe MDL2 Assets"/>
-                            <TextBlock Text="Add Folder" FontSize="12"/>
-                        </StackPanel>
-                    </ListViewItem>
-                </ListView.Items>
-            </ListView>
+        <ScrollViewer VerticalScrollBarVisibility="Visible" VerticalAlignment="Stretch">
+            <StackPanel x:Name="Sidebar">
+                <TextBlock Margin="10" Text="Locations" FontSize="14" FontWeight="Bold" Padding="0" VerticalAlignment="Stretch"/>
+                <ListView x:Name="Folders" ScrollViewer.VerticalScrollMode="Disabled">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="common:StorageLocationViewModel">
+                            <StackPanel Spacing="15" Orientation="Horizontal">
+                                <FontIcon FontSize="16" Glyph="{x:Bind Glyph}" FontFamily="Segoe MDL2 Assets"/>
+                                <TextBlock Text="{x:Bind Name}" FontSize="12"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <ListView SelectionMode="None" 
+                      IsItemClickEnabled="True"
+                      ItemClick="OnAddFolderClick"
+                      ScrollViewer.VerticalScrollMode="Disabled">
+                    <ListView.Items>
+                        <ListViewItem>
+                            <StackPanel Spacing="15" Orientation="Horizontal">
+                                <FontIcon FontSize="16" Glyph="&#xE710;" FontFamily="Segoe MDL2 Assets"/>
+                                <TextBlock Text="Add Folder" FontSize="12"/>
+                            </StackPanel>
+                        </ListViewItem>
+                    </ListView.Items>
+                </ListView>
 
-            <TextBlock x:Name="DrivesLabel" Margin="10" Text="Drives" FontSize="14" FontWeight="Bold" Padding="0" VerticalAlignment="Stretch"/>
-            <ListView x:Name="Drives">
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="common:StorageLocationViewModel">
-                        <StackPanel Spacing="15" Orientation="Horizontal">
-                            <FontIcon FontSize="16" Glyph="{x:Bind Glyph}" FontFamily="Segoe MDL2 Assets"/>
-                            <TextBlock Text="{x:Bind Name}" FontSize="12"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                <TextBlock x:Name="DrivesLabel" Margin="10" Text="Drives" FontSize="14" FontWeight="Bold" Padding="0" VerticalAlignment="Stretch"/>
 
-        </StackPanel>
-
+                <ItemsControl x:Name="Drives">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="common:DriveViewModel">
+                            <Grid>
+                                <photo:DriveListItemView ViewModel="{x:Bind}"></photo:DriveListItemView>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
         <ProgressRing x:Name="ProgressRing" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center" Height="70" Width="70" IsActive="True"></ProgressRing>
     </Grid>
 </Page>

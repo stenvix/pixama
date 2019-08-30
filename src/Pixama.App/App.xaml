@@ -2,6 +2,12 @@
     x:Class="Pixama.App.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Pixama.App">
+    xmlns:local="using:Pixama.App"
+    xmlns:common="using:Pixama.Logic.ViewModels.Common"
+    xmlns:Custom="using:Pixama.App.Views.Photo">
+
+    <Application.Resources>
+        <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls"/>
+    </Application.Resources>
 
 </Application>
