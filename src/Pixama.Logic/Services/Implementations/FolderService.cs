@@ -1,34 +1,37 @@
 ﻿using DynamicData;
+using Newtonsoft.Json;
 using Pixama.Logic.ViewModels.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Windows.Data.Json;
 using Windows.Storage;
 using Windows.Storage.AccessCache;
 using Windows.Storage.Pickers;
-using Newtonsoft.Json;
 
 namespace Pixama.Logic.Services
 {
     public class FolderService : IFolderService
     {
         private static string _folderListKey = "pixama-folders";
-        public async Task GetFolders(SourceList<StorageLocationViewModel> foldersList)
+        public async Task GetFolders(SourceList<BaseLocationViewModel> foldersList)
         {
-            var folders = new List<StorageLocationViewModel>
+            var folders = new List<BaseLocationViewModel>
             {
-                new StorageLocationViewModel("Desktop", "\uE8FC", null,
-                    Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)),
-                new StorageLocationViewModel("Downloads","\uE896", null,
-                    Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\Downloads"),
-                new StorageLocationViewModel("Documents", "\uE8A5", null,
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)),
-                new StorageLocationViewModel("Pictures", "\uEB9F", null,
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)),
-                new StorageLocationViewModel("Videos", "\uEA69", null,
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyVideos))
+                new BaseLocationViewModel{Name = "Desktop", Glyph = "\uE8FC", StorageFolder = null},
+                new BaseLocationViewModel{Name = "Downloads", Glyph = "\uE896", StorageFolder = null},
+                //new BaseLocationViewModel{Name = "Documents", Glyph = "\uE8A5", StorageFolder = KnownFolders.DocumentsLibrary},
+                new BaseLocationViewModel{Name = "Pictures", Glyph = "\uEB9F", StorageFolder = KnownFolders.PicturesLibrary},
+                new BaseLocationViewModel{Name = "Videos", Glyph = "\uEA69", StorageFolder = KnownFolders.VideosLibrary},
+
+                //new BaseLocationViewModel("","\", null,
+                //    Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\Downloads"),
+                //new BaseLocationViewModel("", "\uE8A5", null,
+                //    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)),
+                //new BaseLocationViewModel("Pictures", "\uEB9F", null,
+                //    Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)),
+                //new BaseLocationViewModel("Videos", "\uEA69", null,
+                //    Environment.GetFolderPath(Environment.SpecialFolder.MyVideos))
             };
             var userFolders = await GetUserFolders();
             foldersList.Edit(list =>
@@ -71,9 +74,9 @@ namespace Pixama.Logic.Services
             return JsonConvert.DeserializeObject<List<string>>(tokensString);
         }
 
-        private async Task<List<StorageLocationViewModel>> GetUserFolders()
+        private async Task<List<BaseLocationViewModel>> GetUserFolders()
         {
-            var folders = new List<StorageLocationViewModel>();
+            var folders = new List<BaseLocationViewModel>();
 
             var hasFolders = ApplicationData.Current.LocalSettings.Values.ContainsKey(_folderListKey);
             if (!hasFolders) return folders;
@@ -83,7 +86,7 @@ namespace Pixama.Logic.Services
             foreach (var token in tokens)
             {
                 var storageFolder = await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(token);
-                folders.Add(new StorageLocationViewModel(storageFolder.Name, "\uF12B", storageFolder));
+                folders.Add(new BaseLocationViewModel { Name = storageFolder.Name, Glyph = "\uF12B", StorageFolder = storageFolder });
             }
 
             return folders;

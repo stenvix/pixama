@@ -42,7 +42,7 @@ namespace Pixama.App.Configuration
         private static ServiceLocator GetForView()
         {
             var id = ApplicationView.GetForCurrentView().Id;
-            return ServiceLocators.GetOrAdd(id, new ServiceLocator());
+            return ServiceLocators.GetOrAdd(id, _ => new ServiceLocator());
         }
 
         public T GetService<T>()

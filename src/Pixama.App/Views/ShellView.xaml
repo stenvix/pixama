@@ -17,7 +17,7 @@
 
         <NavigationView x:Name="Navigation" PaneDisplayMode="Top" 
                         IsBackButtonVisible="Collapsed"
-                        IsSettingsVisible="False">
+                        IsSettingsVisible="False" Background="White">
             <NavigationView.PaneHeader>
                 <NavigationViewItemHeader Content="PIXAMA"/>
             </NavigationView.PaneHeader>

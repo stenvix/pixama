@@ -16,12 +16,12 @@
             <ColumnDefinition Width="225"/>
         </Grid.ColumnDefinitions>
 
-        <ScrollViewer VerticalScrollBarVisibility="Visible" VerticalAlignment="Stretch">
-            <StackPanel x:Name="Sidebar">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" VerticalAlignment="Stretch">
+            <StackPanel x:Name="Sidebar" BorderThickness="0, 0, 1, 0"  BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}">
                 <TextBlock Margin="10" Text="Locations" FontSize="14" FontWeight="Bold" Padding="0" VerticalAlignment="Stretch"/>
                 <ListView x:Name="Folders" ScrollViewer.VerticalScrollMode="Disabled">
                     <ListView.ItemTemplate>
-                        <DataTemplate x:DataType="common:StorageLocationViewModel">
+                        <DataTemplate x:DataType="common:BaseLocationViewModel">
                             <StackPanel Spacing="15" Orientation="Horizontal">
                                 <FontIcon FontSize="16" Glyph="{x:Bind Glyph}" FontFamily="Segoe MDL2 Assets"/>
                                 <TextBlock Text="{x:Bind Name}" FontSize="12"/>
@@ -29,10 +29,11 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
+                <NavigationViewItemSeparator />
                 <ListView SelectionMode="None" 
                       IsItemClickEnabled="True"
                       ItemClick="OnAddFolderClick"
-                      ScrollViewer.VerticalScrollMode="Disabled">
+                      ScrollViewer.VerticalScrollMode="Disabled" BorderThickness="0, 1, 0, 0">
                     <ListView.Items>
                         <ListViewItem>
                             <StackPanel Spacing="15" Orientation="Horizontal">
@@ -54,7 +55,8 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="common:DriveViewModel">
                             <Grid>
-                                <photo:DriveListItemView ViewModel="{x:Bind}"></photo:DriveListItemView>
+                                <photo:DriveItemView ViewModel="{x:Bind}"></photo:DriveItemView>
+                                <!--<photo:DriveListItemView ViewModel="{x:Bind}"></photo:DriveListItemView>-->
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

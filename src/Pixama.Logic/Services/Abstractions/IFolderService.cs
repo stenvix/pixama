@@ -7,7 +7,7 @@ namespace Pixama.Logic.Services
 {
     public interface IFolderService
     {
-        Task GetFolders(SourceList<StorageLocationViewModel> foldersList);
+        Task GetFolders(SourceList<BaseLocationViewModel> foldersList);
         Task<IStorageFolder> SelectStorageFolderAsync();
         Task SaveToFavoritesAsync(IStorageFolder folder);
     }

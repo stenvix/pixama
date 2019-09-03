@@ -1,42 +1,46 @@
-﻿using DynamicData;
+﻿using System.Collections.ObjectModel;
 using Pixama.Logic.Services;
 using ReactiveUI;
-using System;
-using System.Collections.ObjectModel;
+using System.Reactive;
 using System.Threading.Tasks;
-using Windows.Storage;
 
 namespace Pixama.Logic.ViewModels.Common
 {
-    public class DriveViewModel : BaseViewModel
+    public class DriveViewModel : BaseDriveLocationViewModel
     {
-        private string _name;
-        private bool _showTree;
-        private string _glyph;
-        private IStorageFolder _storageFolder;
-        private readonly ReadOnlyObservableCollection<DriveLocationViewModel> _children;
-        private readonly SourceList<DriveLocationViewModel> _childrenFoldersList;
-        private readonly IDriveService _driveService;
+        public override string ExpandGlyph => GetExpandGlyph();
 
-        public string Name { get => $"Removable Drive ({_name})"; set => this.RaiseAndSetIfChanged(ref _name, value); }
-        public string Glyph { get => _glyph; set => this.RaiseAndSetIfChanged(ref _glyph, value); }
-        public bool ShowTree { get => _showTree; set => this.RaiseAndSetIfChanged(ref _showTree, value); }
-        public IStorageFolder StorageFolder { get => _storageFolder; set => this.RaiseAndSetIfChanged(ref _storageFolder, value); }
-        public ReadOnlyObservableCollection<DriveLocationViewModel> Children => _children;
+        #region Commands
 
-        public DriveViewModel(IDriveService driveService)
+        public ReactiveCommand<Unit, Unit> ExpandCommand { get; }
+        public ObservableCollection<DriveViewModel> DriveSources { get; }
+
+        #endregion
+
+        public DriveViewModel(IDriveService driveService) : base(driveService)
         {
-            _driveService = driveService;
-            _childrenFoldersList = new SourceList<DriveLocationViewModel>();
+            ExpandCommand = ReactiveCommand.Create(ToggleChildrenVisibility);
+            DriveSources = new ObservableCollection<DriveViewModel> { this };
+        }
 
-            _childrenFoldersList.Connect()
-                .Bind(out _children)
-                .Subscribe();
+        private void ToggleChildrenVisibility()
+        {
+            IsExpanded = !IsExpanded;
+            this.RaisePropertyChanged(nameof(ExpandGlyph));
         }
 
         public override async Task LoadAsync()
         {
-            await _driveService.GetChildrenFoldersAsync(StorageFolder, _childrenFoldersList);
+            IsLoading = true;
+            await DriveService.GetChildrenFoldersAsync(StorageFolder, ChildrenList);
+            HasUnrealizedChildren = ChildrenList.Count != 0;
+            IsLoading = false;
+        }
+
+        private string GetExpandGlyph()
+        {
+            if (IsExpanded) return "\uE70E";
+            return "\uE70D";
         }
     }
 }

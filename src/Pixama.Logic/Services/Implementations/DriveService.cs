@@ -17,7 +17,7 @@ namespace Pixama.Logic.Services
             var drives = new List<DriveViewModel>();
             foreach (var folder in removable)
             {
-                var model = new DriveViewModel(this) { Name = folder.Name, Glyph = _driveGlyph, StorageFolder = folder };
+                var model = new DriveViewModel(this) { Name = folder.DisplayName, Glyph = _driveGlyph, StorageFolder = folder };
                 drives.Add(model);
             }
 
@@ -51,20 +51,22 @@ namespace Pixama.Logic.Services
             });
         }
 
-        private async Task<bool> HasChildFoldersAsync(StorageFolder sourceFolder)
+        public async Task<bool> HasChildFoldersAsync(StorageFolder sourceFolder)
         {
-            var name = sourceFolder.Name;
-            var folders = await sourceFolder.GetFoldersAsync();
+            //var name = sourceFolder.Name;
+            //var folders = await sourceFolder.GetFoldersAsync();
 
-            //var queryOptions = new QueryOptions(CommonFolderQuery.DefaultQuery)
-            //{
-            //    FolderDepth = FolderDepth.Shallow,
-            //    IndexerOption = IndexerOption.UseIndexerWhenAvailable,
-            //};
-            //var query = sourceFolder.CreateFolderQueryWithOptions(queryOptions);
-            //var items = await query.GetItemCountAsync();
-            var count = folders.Count;
+            var queryOptions = new QueryOptions(CommonFolderQuery.DefaultQuery)
+            {
+                FolderDepth = FolderDepth.Shallow,
+                IndexerOption = IndexerOption.UseIndexerWhenAvailable,
+            };
+            var query = sourceFolder.CreateFolderQueryWithOptions(queryOptions);
+            var count = await query.GetItemCountAsync();
             return count != 0;
+
+            //var count = folders.Count;
+            //return count != 0;
         }
     }
 }

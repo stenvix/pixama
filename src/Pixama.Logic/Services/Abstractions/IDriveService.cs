@@ -9,5 +9,6 @@ namespace Pixama.Logic.Services
     {
         Task GetDrives(SourceList<DriveViewModel> drivesList);
         Task GetChildrenFoldersAsync(IStorageFolder sourceFolder, SourceList<DriveLocationViewModel> childrenFoldersList);
+        Task<bool> HasChildFoldersAsync(StorageFolder sourceFolder);
     }
 }

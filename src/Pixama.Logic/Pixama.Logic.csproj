@@ -132,10 +132,13 @@
     <Compile Include="Services\Implementations\NavigationService.cs" />
     <Compile Include="Services\Abstractions\INavigationService.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
+    <Compile Include="ViewModels\Common\BaseDriveLocationViewModel.cs" />
+    <Compile Include="ViewModels\Common\BaseLocationViewModel.cs" />
     <Compile Include="ViewModels\Common\DriveLocationViewModel.cs" />
     <Compile Include="ViewModels\Common\DriveViewModel.cs" />
     <Compile Include="ViewModels\Common\StorageLocationType.cs" />
     <Compile Include="ViewModels\Common\StorageLocationViewModel.cs" />
+    <Compile Include="ViewModels\Events\ClearSelectionEvent.cs" />
     <Compile Include="ViewModels\Photo\PhotoViewModel.cs" />
     <Compile Include="ViewModels\Photo\VideoViewModel.cs" />
     <Compile Include="ViewModels\Shell\ShellMenuItemViewModel.cs" />
