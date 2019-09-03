@@ -29,8 +29,7 @@ namespace Pixama.App.Configuration
             var builder = new ContainerBuilder();
             builder.RegisterType<FrameAdapter>().AsImplementedInterfaces().SingleInstance();
             builder.RegisterType<NavigationService>().AsImplementedInterfaces().SingleInstance();
-            builder.RegisterType<DriveService>().AsImplementedInterfaces().SingleInstance();
-            builder.RegisterType<FolderService>().AsImplementedInterfaces().SingleInstance();
+            builder.RegisterType<LocationService>().AsImplementedInterfaces().SingleInstance();
 
             builder.RegisterType<ShellViewModel>().InstancePerLifetimeScope();
             builder.RegisterType<PhotoViewModel>().InstancePerLifetimeScope();

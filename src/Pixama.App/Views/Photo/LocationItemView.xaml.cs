@@ -1,15 +1,14 @@
 ﻿using Pixama.Logic.ViewModels.Common;
-using Pixama.Logic.ViewModels.Events;
 using ReactiveUI;
 using System.Reactive.Disposables;
 using Windows.UI.Xaml.Input;
 
 namespace Pixama.App.Views.Photo
 {
-    public class DriveLocationItemViewBase : ReactiveUserControl<DriveLocationViewModel> { }
-    public sealed partial class DriveLocationItemView : DriveLocationItemViewBase
+    public class LocationItemViewBase : ReactiveUserControl<LocationViewModel> { }
+    public sealed partial class LocationItemView : LocationItemViewBase
     {
-        public DriveLocationItemView()
+        public LocationItemView()
         {
             InitializeComponent();
             ExpandGlyph.PointerPressed += ExpandGlyphOnPointerPressed;

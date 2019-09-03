@@ -125,8 +125,11 @@
     <Compile Include="Views\Photo\DriveItemView.xaml.cs">
       <DependentUpon>DriveItemView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Photo\DriveLocationItemView.xaml.cs">
-      <DependentUpon>DriveLocationItemView.xaml</DependentUpon>
+    <Compile Include="Views\Photo\LocationItemView.xaml.cs">
+      <DependentUpon>LocationItemView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Photo\FolderItemView.xaml.cs">
+      <DependentUpon>FolderItemView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Photo\PhotoView.xaml.cs">
       <DependentUpon>PhotoView.xaml</DependentUpon>
@@ -162,7 +165,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Photo\DriveLocationItemView.xaml">
+    <Page Include="Views\Photo\LocationItemView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Photo\FolderItemView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

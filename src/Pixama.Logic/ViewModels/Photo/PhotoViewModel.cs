@@ -15,18 +15,16 @@ namespace Pixama.Logic.ViewModels.Photo
     {
         #region Fields
 
-        private readonly IFolderService _folderService;
-        private readonly IDriveService _driveService;
+        private readonly ILocationService _locationService;
         private readonly DeviceWatcher _devicesWatcher;
         private readonly ObservableAsPropertyHelper<bool> _hasRemovableDrives;
         private readonly SourceList<DriveViewModel> _drivesList;
-        private readonly SourceList<BaseLocationViewModel> _foldersList;
+        private readonly SourceList<FolderViewModel> _foldersList;
         private readonly ReadOnlyObservableCollection<DriveViewModel> _drives;
-        private readonly ReadOnlyObservableCollection<BaseLocationViewModel> _folders;
-        private StorageLocationViewModel _selectedLocation;
+        private readonly ReadOnlyObservableCollection<FolderViewModel> _folders;
+        private BaseLocationViewModel _selectedLocation;
 
         public ReactiveCommand<Unit, Unit> AddFolderCommand;
-        private BaseLocationViewModel _selectedLocation1;
 
         #endregion
 
@@ -34,19 +32,17 @@ namespace Pixama.Logic.ViewModels.Photo
 
         public bool HasRemovableDrive => _hasRemovableDrives.Value;
         public ReadOnlyObservableCollection<DriveViewModel> Drives => _drives;
-        public ReadOnlyObservableCollection<BaseLocationViewModel> Folders => _folders;
+        public ReadOnlyObservableCollection<FolderViewModel> Folders => _folders;
 
-        public BaseLocationViewModel SelectedLocation1 { get => _selectedLocation1; set => this.RaiseAndSetIfChanged(ref _selectedLocation1, value); }
-        public StorageLocationViewModel SelectedLocation { get => _selectedLocation; set => this.RaiseAndSetIfChanged(ref _selectedLocation, value); }
+        public BaseLocationViewModel SelectedLocation { get => _selectedLocation; set => this.RaiseAndSetIfChanged(ref _selectedLocation, value); }
 
         #endregion
 
-        public PhotoViewModel(IFolderService folderService, IDriveService driveService)
+        public PhotoViewModel(ILocationService locationService)
         {
-            _folderService = folderService;
-            _driveService = driveService;
+            _locationService = locationService;
             _drivesList = new SourceList<DriveViewModel>();
-            _foldersList = new SourceList<BaseLocationViewModel>();
+            _foldersList = new SourceList<FolderViewModel>();
             _devicesWatcher = DeviceInformation.CreateWatcher(DeviceClass.PortableStorageDevice);
             _devicesWatcher.Added += OnDeviceChanged;
             _devicesWatcher.Removed += OnDeviceChanged;
@@ -74,16 +70,16 @@ namespace Pixama.Logic.ViewModels.Photo
         public override async Task LoadAsync()
         {
             IsLoading = true;
-            await _folderService.GetFolders(_foldersList);
+            await _locationService.GetFolders(_foldersList);
             IsLoading = false;
         }
 
         private async Task AddFolder()
         {
-            var folder = await _folderService.SelectStorageFolderAsync();
+            var folder = await _locationService.SelectStorageFolderAsync();
             if (folder == null) return;
-            await _folderService.SaveToFavoritesAsync(folder);
-            await _folderService.GetFolders(_foldersList);
+            await _locationService.SaveToFavoritesAsync(folder);
+            await _locationService.GetFolders(_foldersList);
         }
 
         public void StartDevicesTracking()
@@ -93,7 +89,7 @@ namespace Pixama.Logic.ViewModels.Photo
 
         private async void OnDeviceChanged(DeviceWatcher sender, object args)
         {
-            await _driveService.GetDrives(_drivesList);
+            await _locationService.GetDrives(_drivesList);
         }
 
         public void StopDevicesTracking()
