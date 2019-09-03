@@ -1,46 +1,37 @@
-﻿using DynamicData;
-using Pixama.Logic.Services;
+﻿using Pixama.Logic.Services;
 using ReactiveUI;
-using System;
-using System.Collections.ObjectModel;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Appointments;
-using Windows.Storage;
 
 namespace Pixama.Logic.ViewModels.Common
 {
-    public class DriveLocationViewModel : BaseViewModel
+    public class DriveLocationViewModel : BaseDriveLocationViewModel
     {
-        private string _name;
-        private IStorageFolder _storageFolder;
-        private readonly IDriveService _driveService;
-        private readonly ReadOnlyObservableCollection<DriveLocationViewModel> _children;
-        private readonly SourceList<DriveLocationViewModel> _childrenList;
-        private bool _hasUnrealizedChildren;
         private bool _isLoaded;
 
-        public string Name { get => _name; set => this.RaiseAndSetIfChanged(ref _name, value); }
-        public bool HasUnrealizedChildren { get => _hasUnrealizedChildren; set => this.RaiseAndSetIfChanged(ref _hasUnrealizedChildren, value); }
-        public IStorageFolder StorageFolder { get => _storageFolder; set => this.RaiseAndSetIfChanged(ref _storageFolder, value); }
-        public ReadOnlyObservableCollection<DriveLocationViewModel> Children => _children;
-
-        public DriveLocationViewModel(IDriveService driveService)
+        public override string ExpandGlyph => GetExpandGlyph();
+        public DriveLocationViewModel() : base(null) { }
+        public DriveLocationViewModel(IDriveService driveService) : base(driveService)
         {
-            _driveService = driveService;
-            _childrenList = new SourceList<DriveLocationViewModel>();
-
-            _childrenList.Connect()
-                .Bind(out _children)
-                .Subscribe();
+            this.WhenAnyValue(i => i.IsExpanded)
+                .Where(i => i)
+                .InvokeCommand(ReactiveCommand.CreateFromTask<bool>(async _ => await LoadAsync()));
         }
 
         public override async Task LoadAsync()
         {
             if (_isLoaded) return;
             IsLoading = true;
-            await _driveService.GetChildrenFoldersAsync(StorageFolder, _childrenList);
+            await DriveService.GetChildrenFoldersAsync(StorageFolder, ChildrenList);
+            HasUnrealizedChildren = ChildrenList.Count != 0;
             IsLoading = false;
             _isLoaded = true;
+        }
+
+        private string GetExpandGlyph()
+        {
+            if (IsExpanded) return "\uE70D";
+            return "\uE76C";
         }
     }
 }
