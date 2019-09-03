@@ -8,21 +8,25 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.AccessCache;
 using Windows.Storage.Pickers;
+using Windows.Storage.Search;
 
 namespace Pixama.Logic.Services
 {
-    public class FolderService : IFolderService
+    public class LocationService : ILocationService
     {
+        private readonly string _driveGlyph = "\uE88E";
+        private readonly string _folderGlyph = "\uF12B";
         private static string _folderListKey = "pixama-folders";
-        public async Task GetFolders(SourceList<BaseLocationViewModel> foldersList)
+
+        public async Task GetFolders(SourceList<FolderViewModel> foldersList)
         {
-            var folders = new List<BaseLocationViewModel>
+            var folders = new List<FolderViewModel>
             {
-                new BaseLocationViewModel{Name = "Desktop", Glyph = "\uE8FC", StorageFolder = null},
-                new BaseLocationViewModel{Name = "Downloads", Glyph = "\uE896", StorageFolder = null},
+                new FolderViewModel(this){Name = "Desktop", Glyph = "\uE8FC", StorageFolder = null, IsStatic = true},
+                new FolderViewModel(this){Name = "Downloads", Glyph = "\uE896", StorageFolder = null, IsStatic = true},
                 //new BaseLocationViewModel{Name = "Documents", Glyph = "\uE8A5", StorageFolder = KnownFolders.DocumentsLibrary},
-                new BaseLocationViewModel{Name = "Pictures", Glyph = "\uEB9F", StorageFolder = KnownFolders.PicturesLibrary},
-                new BaseLocationViewModel{Name = "Videos", Glyph = "\uEA69", StorageFolder = KnownFolders.VideosLibrary},
+                new FolderViewModel(this){Name = "Pictures", Glyph = "\uEB9F", StorageFolder = KnownFolders.PicturesLibrary, IsStatic = true},
+                new FolderViewModel(this){Name = "Videos", Glyph = "\uEA69", StorageFolder = KnownFolders.VideosLibrary, IsStatic = true},
 
                 //new BaseLocationViewModel("","\", null,
                 //    Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\Downloads"),
@@ -74,9 +78,9 @@ namespace Pixama.Logic.Services
             return JsonConvert.DeserializeObject<List<string>>(tokensString);
         }
 
-        private async Task<List<BaseLocationViewModel>> GetUserFolders()
+        private async Task<List<FolderViewModel>> GetUserFolders()
         {
-            var folders = new List<BaseLocationViewModel>();
+            var folders = new List<FolderViewModel>();
 
             var hasFolders = ApplicationData.Current.LocalSettings.Values.ContainsKey(_folderListKey);
             if (!hasFolders) return folders;
@@ -86,10 +90,63 @@ namespace Pixama.Logic.Services
             foreach (var token in tokens)
             {
                 var storageFolder = await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(token);
-                folders.Add(new BaseLocationViewModel { Name = storageFolder.Name, Glyph = "\uF12B", StorageFolder = storageFolder });
+                folders.Add(new FolderViewModel(this) { Name = storageFolder.Name, Glyph = _folderGlyph, StorageFolder = storageFolder });
             }
 
             return folders;
+        }
+
+        public async Task GetDrives(SourceList<DriveViewModel> drivesList)
+        {
+            var removable = await KnownFolders.RemovableDevices.GetFoldersAsync();
+            var drives = new List<DriveViewModel>();
+            foreach (var folder in removable)
+            {
+                var model = new DriveViewModel(this) { Name = folder.DisplayName, Glyph = _driveGlyph, StorageFolder = folder };
+                drives.Add(model);
+            }
+
+            drivesList.Edit(list =>
+            {
+                list.Clear();
+                list.AddRange(drives);
+            });
+        }
+
+        public async Task GetChildrenFoldersAsync(IStorageFolder sourceFolder, SourceList<LocationViewModel> childrenFoldersList)
+        {
+            if (sourceFolder == null) return;
+            var storageFolders = await sourceFolder.GetFoldersAsync();
+
+            var childrenFolders = new List<LocationViewModel>();
+            foreach (var storageFolder in storageFolders)
+            {
+                var model = new LocationViewModel(this)
+                {
+                    Name = storageFolder.Name,
+                    StorageFolder = storageFolder,
+                    HasUnrealizedChildren = await HasChildFoldersAsync(storageFolder)
+                };
+                childrenFolders.Add(model);
+            }
+
+            childrenFoldersList.Edit(list =>
+            {
+                list.Clear();
+                list.AddRange(childrenFolders);
+            });
+        }
+
+        public async Task<bool> HasChildFoldersAsync(StorageFolder sourceFolder)
+        {
+            var queryOptions = new QueryOptions(CommonFolderQuery.DefaultQuery)
+            {
+                FolderDepth = FolderDepth.Shallow,
+                IndexerOption = IndexerOption.UseIndexerWhenAvailable,
+            };
+            var query = sourceFolder.CreateFolderQueryWithOptions(queryOptions);
+            var count = await query.GetItemCountAsync();
+            return count != 0;
         }
     }
 }

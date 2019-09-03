@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace Pixama.Logic.ViewModels.Common
 {
-    public class DriveLocationViewModel : BaseDriveLocationViewModel
+    public class LocationViewModel : BaseLocationViewModel
     {
         private bool _isLoaded;
 
         public override string ExpandGlyph => GetExpandGlyph();
-        public DriveLocationViewModel() : base(null) { }
-        public DriveLocationViewModel(IDriveService driveService) : base(driveService)
+
+        public LocationViewModel(ILocationService locationService) : base(locationService)
         {
             this.WhenAnyValue(i => i.IsExpanded)
                 .Where(i => i)
@@ -22,7 +22,7 @@ namespace Pixama.Logic.ViewModels.Common
         {
             if (_isLoaded) return;
             IsLoading = true;
-            await DriveService.GetChildrenFoldersAsync(StorageFolder, ChildrenList);
+            await LocationService.GetChildrenFoldersAsync(StorageFolder, ChildrenList);
             HasUnrealizedChildren = ChildrenList.Count != 0;
             IsLoading = false;
             _isLoaded = true;

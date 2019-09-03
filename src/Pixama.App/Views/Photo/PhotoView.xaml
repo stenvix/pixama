@@ -4,8 +4,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:common="using:Pixama.Logic.ViewModels.Common"
     xmlns:photo="using:Pixama.App.Views.Photo"
+    xmlns:common="using:Pixama.Logic.ViewModels.Common"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -19,7 +19,32 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto" VerticalAlignment="Stretch">
             <StackPanel x:Name="Sidebar" BorderThickness="0, 0, 1, 0"  BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}">
                 <TextBlock Margin="10" Text="Locations" FontSize="14" FontWeight="Bold" Padding="0" VerticalAlignment="Stretch"/>
-                <ListView x:Name="Folders" ScrollViewer.VerticalScrollMode="Disabled">
+
+                <ItemsControl x:Name="Folders">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="common:FolderViewModel">
+                            <Grid>
+                                <photo:FolderItemView  ViewModel="{x:Bind}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <NavigationViewItemSeparator />
+
+                <ListViewItem>
+                    <StackPanel Spacing="15" Orientation="Horizontal">
+                        <FontIcon FontSize="16" Glyph="&#xE710;" FontFamily="Segoe MDL2 Assets"/>
+                        <TextBlock Text="Add Folder" FontSize="12"/>
+                    </StackPanel>
+                </ListViewItem>
+
+                <!--<ListView x:Name="Folders" ScrollViewer.VerticalScrollMode="Disabled">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="common:BaseLocationViewModel">
                             <StackPanel Spacing="15" Orientation="Horizontal">
@@ -42,7 +67,7 @@
                             </StackPanel>
                         </ListViewItem>
                     </ListView.Items>
-                </ListView>
+                </ListView>-->
 
                 <TextBlock x:Name="DrivesLabel" Margin="10" Text="Drives" FontSize="14" FontWeight="Bold" Padding="0" VerticalAlignment="Stretch"/>
 
@@ -55,7 +80,7 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="common:DriveViewModel">
                             <Grid>
-                                <photo:DriveItemView x:Name="DriveItemView" ViewModel="{x:Bind}"></photo:DriveItemView>
+                                <photo:DriveItemView ViewModel="{x:Bind}" />
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
