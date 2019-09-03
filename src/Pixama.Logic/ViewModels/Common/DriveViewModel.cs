@@ -1,6 +1,6 @@
-﻿using System.Collections.ObjectModel;
-using Pixama.Logic.Services;
+﻿using Pixama.Logic.Services;
 using ReactiveUI;
+using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Threading.Tasks;
 
@@ -22,7 +22,7 @@ namespace Pixama.Logic.ViewModels.Common
             ExpandCommand = ReactiveCommand.Create(ToggleChildrenVisibility);
             DriveSources = new ObservableCollection<DriveViewModel> { this };
         }
-
+        
         private void ToggleChildrenVisibility()
         {
             IsExpanded = !IsExpanded;

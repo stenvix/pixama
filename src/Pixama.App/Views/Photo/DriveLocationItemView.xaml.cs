@@ -1,4 +1,5 @@
 ﻿using Pixama.Logic.ViewModels.Common;
+using Pixama.Logic.ViewModels.Events;
 using ReactiveUI;
 using System.Reactive.Disposables;
 using Windows.UI.Xaml.Input;
@@ -32,6 +33,11 @@ namespace Pixama.App.Views.Photo
                 this.OneWayBind(ViewModel,
                     vm => vm.Children,
                     v => v.Children.ItemsSource)
+                    .DisposeWith(disposable);
+
+                this.OneWayBind(ViewModel,
+                        vm => vm.IsSelected,
+                        v => v.LocationItem.IsSelected)
                     .DisposeWith(disposable);
 
                 //Visibility

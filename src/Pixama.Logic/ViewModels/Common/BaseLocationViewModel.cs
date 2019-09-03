@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Pixama.Logic.ViewModels.Events;
 using ReactiveUI;
+using System;
+using System.Reactive;
+using System.Threading.Tasks;
 using Windows.Storage;
-using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Pixama.Logic.ViewModels.Events;
+using Windows.UI.Xaml.Input;
 
 namespace Pixama.Logic.ViewModels.Common
 {
@@ -25,17 +26,27 @@ namespace Pixama.Logic.ViewModels.Common
         public StorageFolder StorageFolder { get => _storageFolder; set => this.RaiseAndSetIfChanged(ref _storageFolder, value); }
         public bool IsSelected { get => _isSelected; set => this.RaiseAndSetIfChanged(ref _isSelected, value); }
 
+        //Commands
+        public ReactiveCommand<PointerRoutedEventArgs, Unit> ItemClickedCommand { get; }
+
+
         #endregion
 
         public BaseLocationViewModel()
         {
-            MessageBus.Current.Listen<ClearSelectionEvent>().Subscribe(ClearSelection);
+            MessageBus.Current.Listen<LocationChanged>().Subscribe(OnLocationChanged);
+            ItemClickedCommand = ReactiveCommand.CreateFromTask<PointerRoutedEventArgs, Unit>(OnItemClicked);
         }
 
-        private async void ClearSelection(ClearSelectionEvent eventArgs)
+        private void OnLocationChanged(LocationChanged eventArgs)
         {
-            //await Window.Current.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-            //    () => { IsSelected = false; });
+            IsSelected = eventArgs.Location == this;
+        }
+
+        private Task<Unit> OnItemClicked(PointerRoutedEventArgs args)
+        {
+            MessageBus.Current.SendMessage(new LocationChanged(this));
+            return Task.FromResult(Unit.Default);
         }
     }
 }
