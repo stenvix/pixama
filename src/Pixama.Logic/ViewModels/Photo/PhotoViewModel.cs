@@ -26,6 +26,7 @@ namespace Pixama.Logic.ViewModels.Photo
         private StorageLocationViewModel _selectedLocation;
 
         public ReactiveCommand<Unit, Unit> AddFolderCommand;
+        private BaseLocationViewModel _selectedLocation1;
 
         #endregion
 
@@ -35,11 +36,8 @@ namespace Pixama.Logic.ViewModels.Photo
         public ReadOnlyObservableCollection<DriveViewModel> Drives => _drives;
         public ReadOnlyObservableCollection<BaseLocationViewModel> Folders => _folders;
 
-        public StorageLocationViewModel SelectedLocation
-        {
-            get => _selectedLocation;
-            set => this.RaiseAndSetIfChanged(ref _selectedLocation, value);
-        }
+        public BaseLocationViewModel SelectedLocation1 { get => _selectedLocation1; set => this.RaiseAndSetIfChanged(ref _selectedLocation1, value); }
+        public StorageLocationViewModel SelectedLocation { get => _selectedLocation; set => this.RaiseAndSetIfChanged(ref _selectedLocation, value); }
 
         #endregion
 

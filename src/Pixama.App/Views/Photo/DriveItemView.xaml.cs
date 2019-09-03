@@ -12,6 +12,7 @@ namespace Pixama.App.Views.Photo
         {
             InitializeComponent();
             Loading += OnLoading;
+            //Title.AddHandler(TappedEvent, new TappedEventHandler(DriveItemOnPointerPressed), true);
             this.WhenActivated(disposable =>
             {
                 this.OneWayBind(ViewModel,
@@ -32,6 +33,11 @@ namespace Pixama.App.Views.Photo
                 this.OneWayBind(ViewModel,
                         vm => vm.Children,
                         v => v.Children.ItemsSource)
+                    .DisposeWith(disposable);
+
+                this.OneWayBind(ViewModel,
+                        vm => vm.IsSelected,
+                        v => v.DriveItem.IsSelected)
                     .DisposeWith(disposable);
 
                 //Visibility
@@ -56,7 +62,6 @@ namespace Pixama.App.Views.Photo
                     vm => vm.ExpandCommand,
                     v => v.ExpandButton)
                     .DisposeWith(disposable);
-
             });
         }
 

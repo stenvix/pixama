@@ -6,12 +6,19 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:common="using:Pixama.Logic.ViewModels.Common"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
 
     <StackPanel HorizontalAlignment="Stretch">
-        <ListViewItem MinHeight="30" HorizontalContentAlignment="Stretch">
+        <ListViewItem x:Name="LocationItem" MinHeight="30" HorizontalContentAlignment="Stretch">
+            <interactivity:Interaction.Behaviors>
+                <core:EventTriggerBehavior EventName="PointerReleased">
+                    <core:InvokeCommandAction Command="{x:Bind ViewModel.ItemClickedCommand}"/>
+                </core:EventTriggerBehavior>
+            </interactivity:Interaction.Behaviors>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="30"></ColumnDefinition>

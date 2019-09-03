@@ -139,6 +139,7 @@
     <Compile Include="ViewModels\Common\StorageLocationType.cs" />
     <Compile Include="ViewModels\Common\StorageLocationViewModel.cs" />
     <Compile Include="ViewModels\Events\ClearSelectionEvent.cs" />
+    <Compile Include="ViewModels\Events\LocationChanged.cs" />
     <Compile Include="ViewModels\Photo\PhotoViewModel.cs" />
     <Compile Include="ViewModels\Photo\VideoViewModel.cs" />
     <Compile Include="ViewModels\Shell\ShellMenuItemViewModel.cs" />

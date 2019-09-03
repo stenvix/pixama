@@ -64,10 +64,6 @@ namespace Pixama.App.Views.Photo
                         v => v.Drives.ItemsSource)
                     .DisposeWith(disposable);
 
-                //this.Bind(ViewModel,
-                //    vm => vm.SelectedLocation,
-                //    v => v.Drives.SelectedItem);
-
                 this.Bind(ViewModel,
                     vm => vm.SelectedLocation,
                     v => v.Folders.SelectedItem);
