@@ -16,26 +16,17 @@ namespace Pixama.Logic.Services
     {
         private readonly string _driveGlyph = "\uE88E";
         private readonly string _folderGlyph = "\uF12B";
-        private static string _folderListKey = "pixama-folders";
+        private readonly string _folderListKey = "pixama-folders";
+        private readonly string _downloadsPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\Downloads";
 
-        public async Task GetFolders(SourceList<FolderViewModel> foldersList)
+        public async Task LoadFoldersAsync(SourceList<FolderViewModel> foldersList)
         {
             var folders = new List<FolderViewModel>
             {
-                new FolderViewModel(this){Name = "Desktop", Glyph = "\uE8FC", StorageFolder = null, IsStatic = true},
-                new FolderViewModel(this){Name = "Downloads", Glyph = "\uE896", StorageFolder = null, IsStatic = true},
-                //new BaseLocationViewModel{Name = "Documents", Glyph = "\uE8A5", StorageFolder = KnownFolders.DocumentsLibrary},
+                //new FolderViewModel(this){Name = "Desktop", Glyph = "\uE8FC", StorageFolder = null, IsStatic = true},
+                //new FolderViewModel(this){Name = "Downloads", Glyph = "\uE896", StorageFolder = await StorageFolder.GetFolderFromPathAsync(_downloadsPath), IsStatic = true},
                 new FolderViewModel(this){Name = "Pictures", Glyph = "\uEB9F", StorageFolder = KnownFolders.PicturesLibrary, IsStatic = true},
                 new FolderViewModel(this){Name = "Videos", Glyph = "\uEA69", StorageFolder = KnownFolders.VideosLibrary, IsStatic = true},
-
-                //new BaseLocationViewModel("","\", null,
-                //    Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\Downloads"),
-                //new BaseLocationViewModel("", "\uE8A5", null,
-                //    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)),
-                //new BaseLocationViewModel("Pictures", "\uEB9F", null,
-                //    Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)),
-                //new BaseLocationViewModel("Videos", "\uEA69", null,
-                //    Environment.GetFolderPath(Environment.SpecialFolder.MyVideos))
             };
             var userFolders = await GetUserFolders();
             foldersList.Edit(list =>
@@ -46,29 +37,35 @@ namespace Pixama.Logic.Services
             });
         }
 
-        public async Task<IStorageFolder> SelectStorageFolderAsync()
+        public Task LoadFolderAsync(StorageFolder storageFolder, string token, SourceList<FolderViewModel> foldersList)
+        {
+            var model = new FolderViewModel(this, token) { Name = storageFolder.DisplayName, Glyph = _folderGlyph, StorageFolder = storageFolder };
+            foldersList.Add(model);
+            return Task.CompletedTask;
+        }
+
+        public async Task<StorageFolder> SelectStorageFolderAsync()
         {
             var folderPicker = new FolderPicker { SuggestedStartLocation = PickerLocationId.ComputerFolder };
             folderPicker.FileTypeFilter.Add("*");
             return await folderPicker.PickSingleFolderAsync();
         }
 
-        public Task SaveToFavoritesAsync(IStorageFolder folder)
+        public bool SaveToFavorites(StorageFolder folder, out string token)
         {
-            var token = StorageApplicationPermissions.FutureAccessList.Add(folder);
-            var exists = ApplicationData.Current.LocalSettings.Values.ContainsKey(_folderListKey);
-            if (exists)
-            {
-                var tokens = GetExistedTokens();
-                tokens.Add(token);
-                ApplicationData.Current.LocalSettings.Values[_folderListKey] = JsonConvert.SerializeObject(tokens.Distinct());
-            }
-            else
-            {
-                var tokens = new List<string> { token };
-                ApplicationData.Current.LocalSettings.Values.Add(_folderListKey, JsonConvert.SerializeObject(tokens));
-            }
+            token = StorageApplicationPermissions.FutureAccessList.Add(folder);
+            var tokens = GetTokenList();
+            if (tokens.Contains(token)) return false;
+            SetTokenList(tokens);
+            return true;
+        }
 
+        public Task RemoveFromFavoritesAsync(string token)
+        {
+            StorageApplicationPermissions.FutureAccessList.Remove(token);
+            var tokens = GetTokenList();
+            tokens.Remove(token);
+            SetTokenList(tokens);
             return Task.CompletedTask;
         }
 
@@ -89,14 +86,21 @@ namespace Pixama.Logic.Services
 
             foreach (var token in tokens)
             {
-                var storageFolder = await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(token);
-                folders.Add(new FolderViewModel(this) { Name = storageFolder.Name, Glyph = _folderGlyph, StorageFolder = storageFolder });
+                try
+                {
+                    var storageFolder = await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(token);
+                    folders.Add(new FolderViewModel(this, token) { Name = storageFolder.DisplayName, Glyph = _folderGlyph, StorageFolder = storageFolder });
+                }
+                catch (Exception e)
+                {
+                    //Todo: Show dialog to user about missing folders
+                }
             }
 
             return folders;
         }
 
-        public async Task GetDrives(SourceList<DriveViewModel> drivesList)
+        public async Task LoadDrivesAsync(SourceList<DriveViewModel> drivesList)
         {
             var removable = await KnownFolders.RemovableDevices.GetFoldersAsync();
             var drives = new List<DriveViewModel>();
@@ -113,7 +117,7 @@ namespace Pixama.Logic.Services
             });
         }
 
-        public async Task GetChildrenFoldersAsync(IStorageFolder sourceFolder, SourceList<LocationViewModel> childrenFoldersList)
+        public async Task GetChildrenFoldersAsync(StorageFolder sourceFolder, SourceList<LocationViewModel> childrenFoldersList)
         {
             if (sourceFolder == null) return;
             var storageFolders = await sourceFolder.GetFoldersAsync();
@@ -147,6 +151,30 @@ namespace Pixama.Logic.Services
             var query = sourceFolder.CreateFolderQueryWithOptions(queryOptions);
             var count = await query.GetItemCountAsync();
             return count != 0;
+        }
+
+        private List<string> GetTokenList()
+        {
+            var exists = TokenListExists();
+            return exists ? GetExistedTokens() : new List<string>();
+        }
+
+        private void SetTokenList(List<string> tokens)
+        {
+            var exists = TokenListExists();
+            if (exists)
+            {
+                ApplicationData.Current.LocalSettings.Values[_folderListKey] = JsonConvert.SerializeObject(tokens.Distinct());
+            }
+            else
+            {
+                ApplicationData.Current.LocalSettings.Values.Add(_folderListKey, JsonConvert.SerializeObject(tokens));
+            }
+        }
+
+        private bool TokenListExists()
+        {
+            return ApplicationData.Current.LocalSettings.Values.ContainsKey(_folderListKey);
         }
     }
 }

@@ -70,6 +70,11 @@ namespace Pixama.App.Views.Photo
                         vm => vm.ExpandCommand,
                         v => v.ExpandButton)
                     .DisposeWith(disposable);
+
+                this.BindCommand(ViewModel,
+                        vm => vm.FavoriteClickCommand,
+                        v => v.FavoriteButton)
+                    .DisposeWith(disposable);
             });
         }
 

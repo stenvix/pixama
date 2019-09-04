@@ -1,18 +1,20 @@
 ﻿using Pixama.Logic.Services;
+using Pixama.Logic.ViewModels.Events;
 using ReactiveUI;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Input;
 
 namespace Pixama.Logic.ViewModels.Common
 {
     public class FolderViewModel : BaseLocationViewModel
     {
+
         #region Fields
 
         private bool _isStatic;
-        private ObservableAsPropertyHelper<bool> _isDynamic;
+        private readonly string _token;
+        private readonly ObservableAsPropertyHelper<bool> _isDynamic;
 
         #endregion
 
@@ -21,13 +23,14 @@ namespace Pixama.Logic.ViewModels.Common
         public override string ExpandGlyph => GetExpandGlyph();
         public bool IsDynamic => _isDynamic.Value;
         public bool IsStatic { get => _isStatic; set => this.RaiseAndSetIfChanged(ref _isStatic, value); }
-        public ReactiveCommand<PointerRoutedEventArgs, Unit> FavoriteClickCommand { get; }
+        public ReactiveCommand<Unit, Unit> FavoriteClickCommand { get; }
 
         #endregion
 
-        public FolderViewModel(ILocationService locationService) : base(locationService)
+        public FolderViewModel(ILocationService locationService, string token = null) : base(locationService)
         {
-            FavoriteClickCommand = ReactiveCommand.CreateFromTask<PointerRoutedEventArgs, Unit>(OnFavoriteClick);
+            _token = token;
+            FavoriteClickCommand = ReactiveCommand.CreateFromTask<Unit>(OnFavoriteClick);
             this.WhenAnyValue(i => i.IsStatic)
                 .Select(i => !i)
                 .ToProperty(this, i => i.IsDynamic, out _isDynamic);
@@ -41,9 +44,10 @@ namespace Pixama.Logic.ViewModels.Common
             IsLoading = false;
         }
 
-        private Task<Unit> OnFavoriteClick(PointerRoutedEventArgs arg)
+        private async Task OnFavoriteClick(Unit unit)
         {
-            return Task.FromResult(Unit.Default);
+            await LocationService.RemoveFromFavoritesAsync(_token);
+            MessageBus.Current.SendMessage(new LocationRemoved(this));
         }
 
         private string GetExpandGlyph()
