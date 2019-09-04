@@ -6,6 +6,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:photo="using:Pixama.App.Views.Photo"
     xmlns:common="using:Pixama.Logic.ViewModels.Common"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -38,36 +40,16 @@
                 <NavigationViewItemSeparator />
 
                 <ListViewItem>
+                    <interactivity:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="PointerReleased">
+                            <core:InvokeCommandAction x:Name="AddFolderAction"></core:InvokeCommandAction>
+                        </core:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
                     <StackPanel Spacing="15" Orientation="Horizontal">
                         <FontIcon FontSize="16" Glyph="&#xE710;" FontFamily="Segoe MDL2 Assets"/>
                         <TextBlock Text="Add Folder" FontSize="12"/>
                     </StackPanel>
                 </ListViewItem>
-
-                <!--<ListView x:Name="Folders" ScrollViewer.VerticalScrollMode="Disabled">
-                    <ListView.ItemTemplate>
-                        <DataTemplate x:DataType="common:BaseLocationViewModel">
-                            <StackPanel Spacing="15" Orientation="Horizontal">
-                                <FontIcon FontSize="16" Glyph="{x:Bind Glyph}" FontFamily="Segoe MDL2 Assets"/>
-                                <TextBlock Text="{x:Bind Name}" FontSize="12"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-                <NavigationViewItemSeparator />
-                <ListView SelectionMode="None" 
-                      IsItemClickEnabled="True"
-                      ItemClick="OnAddFolderClick"
-                      ScrollViewer.VerticalScrollMode="Disabled" BorderThickness="0, 1, 0, 0">
-                    <ListView.Items>
-                        <ListViewItem>
-                            <StackPanel Spacing="15" Orientation="Horizontal">
-                                <FontIcon FontSize="16" Glyph="&#xE710;" FontFamily="Segoe MDL2 Assets"/>
-                                <TextBlock Text="Add Folder" FontSize="12"/>
-                            </StackPanel>
-                        </ListViewItem>
-                    </ListView.Items>
-                </ListView>-->
 
                 <TextBlock x:Name="DrivesLabel" Margin="10" Text="Drives" FontSize="14" FontWeight="Bold" Padding="0" VerticalAlignment="Stretch"/>
 

@@ -15,7 +15,7 @@
     <StackPanel HorizontalAlignment="Stretch">
         <ListViewItem x:Name="ListItem" HorizontalContentAlignment="Stretch">
             <interactivity:Interaction.Behaviors>
-                <core:EventTriggerBehavior EventName="PointerReleased">
+                <core:EventTriggerBehavior EventName="PointerPressed">
                     <core:InvokeCommandAction Command="{x:Bind ViewModel.ItemClickCommand}"/>
                 </core:EventTriggerBehavior>
             </interactivity:Interaction.Behaviors>
@@ -25,7 +25,7 @@
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal">
-                    <Button x:Name="FavoriteButton" Visibility="Collapsed" Padding="8" Margin="-8,0,7,0" CornerRadius="15" Background="Transparent" ClickMode="Press" Command="{x:Bind ViewModel.FavoriteClickCommand}">
+                    <Button x:Name="FavoriteButton" Visibility="Collapsed" Padding="8" Margin="-8,0,7,0" CornerRadius="15" Background="Transparent" ClickMode="Release">
                         <FontIcon x:Name="FavoriteGlyph" Glyph="&#xE734;" VerticalAlignment="Center" FontSize="16"/>
                     </Button>
 

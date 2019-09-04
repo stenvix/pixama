@@ -63,6 +63,11 @@ namespace Pixama.App.Views.Photo
                         vm => vm.Drives,
                         v => v.Drives.ItemsSource)
                     .DisposeWith(disposable);
+
+                this.BindCommand(ViewModel,
+                    vm => vm.AddFolderCommand,
+                    v => v.AddFolderAction)
+                    .DisposeWith(disposable);
             });
         }
 
@@ -76,7 +81,5 @@ namespace Pixama.App.Views.Photo
         {
             ViewModel.StopDevicesTracking();
         }
-
-        private void OnAddFolderClick(object sender, ItemClickEventArgs e) => ViewModel.AddFolderCommand.Execute();
     }
 }

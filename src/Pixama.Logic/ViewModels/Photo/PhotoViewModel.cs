@@ -1,6 +1,7 @@
 ﻿using DynamicData;
 using Pixama.Logic.Services;
 using Pixama.Logic.ViewModels.Common;
+using Pixama.Logic.ViewModels.Events;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -8,6 +9,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
+using Windows.UI.Xaml.Input;
 
 namespace Pixama.Logic.ViewModels.Photo
 {
@@ -24,8 +26,6 @@ namespace Pixama.Logic.ViewModels.Photo
         private readonly ReadOnlyObservableCollection<FolderViewModel> _folders;
         private BaseLocationViewModel _selectedLocation;
 
-        public ReactiveCommand<Unit, Unit> AddFolderCommand;
-
         #endregion
 
         #region Properties
@@ -35,6 +35,8 @@ namespace Pixama.Logic.ViewModels.Photo
         public ReadOnlyObservableCollection<FolderViewModel> Folders => _folders;
 
         public BaseLocationViewModel SelectedLocation { get => _selectedLocation; set => this.RaiseAndSetIfChanged(ref _selectedLocation, value); }
+
+        public ReactiveCommand<PointerRoutedEventArgs, Unit> AddFolderCommand { get; }
 
         #endregion
 
@@ -64,22 +66,23 @@ namespace Pixama.Logic.ViewModels.Photo
                 .Bind(out _folders)
                 .Subscribe();
 
-            AddFolderCommand = ReactiveCommand.CreateFromTask(AddFolder);
+            AddFolderCommand = ReactiveCommand.CreateFromTask<PointerRoutedEventArgs>(AddFolderAsync);
+            MessageBus.Current.Listen<LocationRemoved>().Subscribe(OnLocationRemoved);
         }
 
         public override async Task LoadAsync()
         {
             IsLoading = true;
-            await _locationService.GetFolders(_foldersList);
+            await _locationService.LoadFoldersAsync(_foldersList);
             IsLoading = false;
         }
 
-        private async Task AddFolder()
+        private async Task AddFolderAsync(PointerRoutedEventArgs args)
         {
             var folder = await _locationService.SelectStorageFolderAsync();
             if (folder == null) return;
-            await _locationService.SaveToFavoritesAsync(folder);
-            await _locationService.GetFolders(_foldersList);
+            if (!_locationService.SaveToFavorites(folder, out string token)) return; //Todo: show duplication message box
+            await _locationService.LoadFolderAsync(folder, token, _foldersList);
         }
 
         public void StartDevicesTracking()
@@ -89,12 +92,17 @@ namespace Pixama.Logic.ViewModels.Photo
 
         private async void OnDeviceChanged(DeviceWatcher sender, object args)
         {
-            await _locationService.GetDrives(_drivesList);
+            await _locationService.LoadDrivesAsync(_drivesList);
         }
 
         public void StopDevicesTracking()
         {
             _devicesWatcher.Stop();
+        }
+
+        private void OnLocationRemoved(LocationRemoved args)
+        {
+            _foldersList.Remove(args.Location);
         }
     }
 }
