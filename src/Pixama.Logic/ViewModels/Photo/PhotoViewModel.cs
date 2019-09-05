@@ -81,8 +81,8 @@ namespace Pixama.Logic.ViewModels.Photo
         {
             var folder = await _locationService.SelectStorageFolderAsync();
             if (folder == null) return;
-            if (!_locationService.SaveToFavorites(folder, out string token)) return; //Todo: show duplication message box
-            await _locationService.LoadFolderAsync(folder, token, _foldersList);
+            if (!_locationService.SaveToFavorites(folder)) return; //Todo: show duplication message box
+            await _locationService.LoadFolderAsync(folder, _foldersList);
         }
 
         public void StartDevicesTracking()

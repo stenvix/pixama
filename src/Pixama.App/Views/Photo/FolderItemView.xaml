@@ -15,7 +15,7 @@
     <StackPanel HorizontalAlignment="Stretch">
         <ListViewItem x:Name="ListItem" HorizontalContentAlignment="Stretch">
             <interactivity:Interaction.Behaviors>
-                <core:EventTriggerBehavior EventName="PointerPressed">
+                <core:EventTriggerBehavior EventName="PointerReleased">
                     <core:InvokeCommandAction Command="{x:Bind ViewModel.ItemClickCommand}"/>
                 </core:EventTriggerBehavior>
             </interactivity:Interaction.Behaviors>

@@ -12,7 +12,6 @@ namespace Pixama.App.Views.Photo
         {
             InitializeComponent();
             Loading += OnLoading;
-            //Title.AddHandler(TappedEvent, new TappedEventHandler(DriveItemOnPointerPressed), true);
             this.WhenActivated(disposable =>
             {
                 this.OneWayBind(ViewModel,
