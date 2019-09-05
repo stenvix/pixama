@@ -27,9 +27,8 @@ namespace Pixama.Logic.ViewModels.Common
 
         #endregion
 
-        public FolderViewModel(ILocationService locationService, string token = null) : base(locationService)
+        public FolderViewModel(ILocationService locationService) : base(locationService)
         {
-            _token = token;
             FavoriteClickCommand = ReactiveCommand.CreateFromTask<Unit>(OnFavoriteClick);
             this.WhenAnyValue(i => i.IsStatic)
                 .Select(i => !i)
@@ -46,7 +45,7 @@ namespace Pixama.Logic.ViewModels.Common
 
         private async Task OnFavoriteClick(Unit unit)
         {
-            await LocationService.RemoveFromFavoritesAsync(_token);
+            if (!LocationService.RemoveFromFavoritesAsync(StorageFolder)) return; //Todo: show warning message
             MessageBus.Current.SendMessage(new LocationRemoved(this));
         }
 

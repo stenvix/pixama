@@ -37,9 +37,9 @@ namespace Pixama.Logic.Services
             });
         }
 
-        public Task LoadFolderAsync(StorageFolder storageFolder, string token, SourceList<FolderViewModel> foldersList)
+        public Task LoadFolderAsync(StorageFolder storageFolder, SourceList<FolderViewModel> foldersList)
         {
-            var model = new FolderViewModel(this, token) { Name = storageFolder.DisplayName, Glyph = _folderGlyph, StorageFolder = storageFolder };
+            var model = new FolderViewModel(this) { Name = storageFolder.DisplayName, Glyph = _folderGlyph, StorageFolder = storageFolder };
             foldersList.Add(model);
             return Task.CompletedTask;
         }
@@ -51,45 +51,37 @@ namespace Pixama.Logic.Services
             return await folderPicker.PickSingleFolderAsync();
         }
 
-        public bool SaveToFavorites(StorageFolder folder, out string token)
+        public bool SaveToFavorites(StorageFolder folder)
         {
-            token = StorageApplicationPermissions.FutureAccessList.Add(folder);
-            var tokens = GetTokenList();
-            if (tokens.Contains(token)) return false;
-            SetTokenList(tokens);
+            var tokens = GetTokens();
+            if (tokens.ContainsKey(folder.Path)) return false;
+            var token = StorageApplicationPermissions.FutureAccessList.Add(folder);
+            tokens.Add(folder.Path, token);
+            UpdateTokens(tokens);
             return true;
         }
 
-        public Task RemoveFromFavoritesAsync(string token)
+        public bool RemoveFromFavoritesAsync(StorageFolder folder)
         {
+            var tokens = GetTokens();
+            if (!tokens.ContainsKey(folder.Path)) return false;
+            tokens.Remove(folder.Path, out string token);
             StorageApplicationPermissions.FutureAccessList.Remove(token);
-            var tokens = GetTokenList();
-            tokens.Remove(token);
-            SetTokenList(tokens);
-            return Task.CompletedTask;
-        }
-
-        private List<string> GetExistedTokens()
-        {
-            var tokensString = (string)ApplicationData.Current.LocalSettings.Values[_folderListKey];
-            return JsonConvert.DeserializeObject<List<string>>(tokensString);
+            UpdateTokens(tokens);
+            return true;
         }
 
         private async Task<List<FolderViewModel>> GetUserFolders()
         {
             var folders = new List<FolderViewModel>();
-
-            var hasFolders = ApplicationData.Current.LocalSettings.Values.ContainsKey(_folderListKey);
-            if (!hasFolders) return folders;
-
-            var tokens = GetExistedTokens();
+            var tokens = GetTokens();
 
             foreach (var token in tokens)
             {
                 try
                 {
-                    var storageFolder = await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(token);
-                    folders.Add(new FolderViewModel(this, token) { Name = storageFolder.DisplayName, Glyph = _folderGlyph, StorageFolder = storageFolder });
+                    var storageFolder = await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(token.Value);
+                    folders.Add(new FolderViewModel(this) { Name = storageFolder.DisplayName, Glyph = _folderGlyph, StorageFolder = storageFolder });
                 }
                 catch (Exception e)
                 {
@@ -153,28 +145,40 @@ namespace Pixama.Logic.Services
             return count != 0;
         }
 
-        private List<string> GetTokenList()
+        #region Tokens
+
+        private Dictionary<string, string> GetExistedTokens()
         {
-            var exists = TokenListExists();
-            return exists ? GetExistedTokens() : new List<string>();
+            var tokensString = (string)ApplicationData.Current.LocalSettings.Values[_folderListKey];
+            return JsonConvert.DeserializeObject<Dictionary<string, string>>(tokensString);
         }
 
-        private void SetTokenList(List<string> tokens)
+        private Dictionary<string, string> GetTokens()
         {
-            var exists = TokenListExists();
+            var exists = TokensExists();
+            return exists ? GetExistedTokens() : new Dictionary<string, string>();
+        }
+
+        private void UpdateTokens(Dictionary<string, string> tokens)
+        {
+            var exists = TokensExists();
             if (exists)
             {
-                ApplicationData.Current.LocalSettings.Values[_folderListKey] = JsonConvert.SerializeObject(tokens.Distinct());
+                ApplicationData.Current.LocalSettings.Values[_folderListKey] = JsonConvert.SerializeObject(tokens);
             }
             else
             {
-                ApplicationData.Current.LocalSettings.Values.Add(_folderListKey, JsonConvert.SerializeObject(tokens));
+                var str = JsonConvert.SerializeObject(tokens);
+                ApplicationData.Current.LocalSettings.Values.Add(_folderListKey, str);
             }
         }
 
-        private bool TokenListExists()
+        private bool TokensExists()
         {
+            //ApplicationData.Current.LocalSettings.Values.Remove(_folderListKey);
             return ApplicationData.Current.LocalSettings.Values.ContainsKey(_folderListKey);
         }
+
+        #endregion
     }
 }
