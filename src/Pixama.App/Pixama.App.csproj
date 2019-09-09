@@ -131,6 +131,12 @@
     <Compile Include="Views\Photo\FolderItemView.xaml.cs">
       <DependentUpon>FolderItemView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Photo\PhotoGridItemView.xaml.cs">
+      <DependentUpon>PhotoGridItemView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Photo\PhotoGridView.xaml.cs">
+      <DependentUpon>PhotoGridView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Photo\PhotoView.xaml.cs">
       <DependentUpon>PhotoView.xaml</DependentUpon>
     </Compile>
@@ -170,6 +176,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Photo\FolderItemView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Photo\PhotoGridItemView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Photo\PhotoGridView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
