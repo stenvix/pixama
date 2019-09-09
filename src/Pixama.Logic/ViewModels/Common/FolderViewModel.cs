@@ -13,7 +13,6 @@ namespace Pixama.Logic.ViewModels.Common
         #region Fields
 
         private bool _isStatic;
-        private readonly string _token;
         private readonly ObservableAsPropertyHelper<bool> _isDynamic;
 
         #endregion

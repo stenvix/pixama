@@ -120,21 +120,28 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AppConstants.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Abstractions\IFrameAdapter.cs" />
     <Compile Include="Services\Abstractions\ILocationService.cs" />
+    <Compile Include="Services\Abstractions\IPhotoService.cs" />
     <Compile Include="Services\Implementations\FrameAdapter.cs" />
     <Compile Include="Services\Implementations\LocationService.cs" />
     <Compile Include="Services\Implementations\NavigationService.cs" />
     <Compile Include="Services\Abstractions\INavigationService.cs" />
+    <Compile Include="Services\Implementations\PhotoService.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\Common\BaseLocationViewModel.cs" />
     <Compile Include="ViewModels\Common\LocationViewModel.cs" />
     <Compile Include="ViewModels\Common\DriveViewModel.cs" />
     <Compile Include="ViewModels\Common\FolderViewModel.cs" />
     <Compile Include="ViewModels\Events\ClearSelectionEvent.cs" />
+    <Compile Include="ViewModels\Events\DeselectAllPhotos.cs" />
     <Compile Include="ViewModels\Events\LocationChanged.cs" />
     <Compile Include="ViewModels\Events\LocationRemoved.cs" />
+    <Compile Include="ViewModels\Events\SelectAllPhotos.cs" />
+    <Compile Include="ViewModels\Photo\PhotoGridItemViewModel.cs" />
+    <Compile Include="ViewModels\Photo\PhotoGridViewModel.cs" />
     <Compile Include="ViewModels\Photo\PhotoViewModel.cs" />
     <Compile Include="ViewModels\Photo\VideoViewModel.cs" />
     <Compile Include="ViewModels\Shell\ShellMenuItemViewModel.cs" />

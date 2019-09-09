@@ -1,0 +1,34 @@
+﻿<local:PhotoGridViewBase
+    x:Class="Pixama.App.Views.Photo.PhotoGridView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:local="using:Pixama.App.Views.Photo"
+    xmlns:photo="using:Pixama.Logic.ViewModels.Photo"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+    <local:PhotoGridViewBase.Resources>
+        <Style x:Key="PhotoGridStyle" TargetType="controls:AdaptiveGridView">
+            <Setter Property="ItemHeight" Value="240"/>
+            <Setter Property="DesiredWidth" Value="260"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="SelectionMode" Value="Multiple"/>
+            <Setter Property="IsMultiSelectCheckBoxEnabled" Value="True"/>
+            <Setter Property="IsItemClickEnabled" Value="True"/>
+        </Style>
+        <DataTemplate x:Key="PhotoGridItemTemplate" x:DataType="photo:PhotoGridItemViewModel">
+            <Grid>
+                <local:PhotoGridItemView ViewModel="{x:Bind}"/>
+            </Grid>
+        </DataTemplate>
+    </local:PhotoGridViewBase.Resources>
+    <Grid>
+        <controls:AdaptiveGridView x:Name="PhotoGrid" Style="{StaticResource PhotoGridStyle}" ItemTemplate="{StaticResource PhotoGridItemTemplate}" StretchContentForSingleRow="False"/>
+        <TextBlock x:Name="PhotoGridPlaceholder" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Please, select folder." FontSize="28"></TextBlock>
+        <ProgressRing x:Name="IsLoading" Style="{StaticResource LoadingRing}" />
+    </Grid>
+
+</local:PhotoGridViewBase>
