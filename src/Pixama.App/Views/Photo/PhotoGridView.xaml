@@ -26,9 +26,19 @@
         </DataTemplate>
     </local:PhotoGridViewBase.Resources>
     <Grid>
-        <controls:AdaptiveGridView x:Name="PhotoGrid" Style="{StaticResource PhotoGridStyle}" ItemTemplate="{StaticResource PhotoGridItemTemplate}" StretchContentForSingleRow="False"/>
-        <TextBlock x:Name="PhotoGridPlaceholder" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Please, select folder." FontSize="28"></TextBlock>
-        <ProgressRing x:Name="IsLoading" Style="{StaticResource LoadingRing}" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <CommandBar x:Name="PhotoBar" Grid.Row="1" DefaultLabelPosition="Right">
+            <AppBarButton x:Name="SelectAllButton" Icon="Accept" Label="Select All" LabelPosition="Default"/>
+            <AppBarButton x:Name="DeselectAllButton" Icon="Cancel" Label="Deselect All" LabelPosition="Default"/>
+        </CommandBar>
+
+        <controls:AdaptiveGridView x:Name="PhotoGrid" Grid.Row="0" Style="{StaticResource PhotoGridStyle}" ItemTemplate="{StaticResource PhotoGridItemTemplate}" StretchContentForSingleRow="False"/>
+        <TextBlock x:Name="PhotoGridPlaceholder" Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Please, select folder." FontSize="28"></TextBlock>
+        <ProgressRing x:Name="IsLoading" Grid.Row="0" Grid.RowSpan="2" Style="{StaticResource LoadingRing}" />
     </Grid>
 
 </local:PhotoGridViewBase>
