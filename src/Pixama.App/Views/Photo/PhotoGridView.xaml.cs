@@ -31,6 +31,11 @@ namespace Pixama.App.Views.Photo
                     .DisposeWith(disposable);
 
                 this.OneWayBind(ViewModel,
+                        vm => vm.SourceSelected,
+                        v => v.PhotoBar.Visibility)
+                    .DisposeWith(disposable);
+
+                this.OneWayBind(ViewModel,
                         vm => vm.IsLoading,
                         v => v.IsLoading.Visibility)
                     .DisposeWith(disposable);
@@ -38,6 +43,16 @@ namespace Pixama.App.Views.Photo
                 this.OneWayBind(ViewModel,
                         vm => vm.Photos,
                         v => v.PhotoGrid.ItemsSource)
+                    .DisposeWith(disposable);
+
+                this.BindCommand(ViewModel,
+                        vm => vm.SelectAllCommand,
+                        v => v.SelectAllButton)
+                    .DisposeWith(disposable);
+
+                this.BindCommand(ViewModel,
+                        vm => vm.DeselectAllCommand,
+                        v => v.DeselectAllButton)
                     .DisposeWith(disposable);
             });
         }

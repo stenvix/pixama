@@ -5,7 +5,6 @@ using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
 using System.Reactive;
-using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.UI.Xaml.Input;
 
@@ -29,6 +28,7 @@ namespace Pixama.Logic.ViewModels.Common
         #endregion
 
         #region Properties
+
         public abstract string ExpandGlyph { get; }
         public string Name { get => _name; set => this.RaiseAndSetIfChanged(ref _name, value); }
         public string Glyph { get => _glyph; set => this.RaiseAndSetIfChanged(ref _glyph, value); }
@@ -40,8 +40,8 @@ namespace Pixama.Logic.ViewModels.Common
         public ReadOnlyObservableCollection<LocationViewModel> Children => _children;
 
         //Commands
-        public ReactiveCommand<dynamic, Unit> ExpandCommand { get; }
-        public ReactiveCommand<PointerRoutedEventArgs, Unit> ItemClickCommand { get; }
+        public ReactiveCommand<TappedRoutedEventArgs, Unit> ExpandCommand { get; }
+        public ReactiveCommand<TappedRoutedEventArgs, Unit> ItemClickCommand { get; }
 
         #endregion
 
@@ -56,15 +56,15 @@ namespace Pixama.Logic.ViewModels.Common
 
             MessageBus.Current.Listen<LocationChanged>().Subscribe(OnLocationChanged);
 
-            ItemClickCommand = ReactiveCommand.CreateFromTask<PointerRoutedEventArgs, Unit>(OnItemClick);
-            ExpandCommand = ReactiveCommand.Create<dynamic, Unit>(ToggleChildrenVisibility);
+            ItemClickCommand = ReactiveCommand.Create<TappedRoutedEventArgs>(OnItemClick);
+            ExpandCommand = ReactiveCommand.Create<TappedRoutedEventArgs>(ToggleChildrenVisibility);
         }
 
-        private Unit ToggleChildrenVisibility(dynamic args)
+        private void ToggleChildrenVisibility(TappedRoutedEventArgs args)
         {
             IsExpanded = !IsExpanded;
             this.RaisePropertyChanged(nameof(ExpandGlyph));
-            return Unit.Default;
+            if (args != null) args.Handled = true;
         }
 
         private void OnLocationChanged(LocationChanged eventArgs)
@@ -72,10 +72,9 @@ namespace Pixama.Logic.ViewModels.Common
             IsSelected = eventArgs.Location == this;
         }
 
-        private Task<Unit> OnItemClick(PointerRoutedEventArgs args)
+        private void OnItemClick(TappedRoutedEventArgs args)
         {
             MessageBus.Current.SendMessage(new LocationChanged(this));
-            return Task.FromResult(Unit.Default);
         }
     }
 }

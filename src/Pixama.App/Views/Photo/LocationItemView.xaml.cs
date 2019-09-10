@@ -11,7 +11,7 @@ namespace Pixama.App.Views.Photo
         public LocationItemView()
         {
             InitializeComponent();
-            ExpandGlyph.PointerPressed += ExpandGlyphOnPointerPressed;
+            //ExpandGlyph.Tapped += ExpandGlyphOnPointerPressed;
             this.WhenActivated(disposable =>
             {
                 this.OneWayBind(ViewModel,
@@ -57,9 +57,10 @@ namespace Pixama.App.Views.Photo
             });
         }
 
-        private void ExpandGlyphOnPointerPressed(object sender, PointerRoutedEventArgs e)
+        private void ExpandGlyphOnPointerPressed(object sender, TappedRoutedEventArgs tappedRoutedEventArgs)
         {
             ViewModel.IsExpanded = !ViewModel.IsExpanded;
+            tappedRoutedEventArgs.Handled = true;
         }
     }
 }

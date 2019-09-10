@@ -6,6 +6,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.ServiceModel.Channels;
 using System.Threading.Tasks;
 using Pixama.Logic.ViewModels.Common;
 
@@ -32,6 +33,8 @@ namespace Pixama.Logic.ViewModels.Photo
         public ReadOnlyObservableCollection<PhotoGridItemViewModel> Photos => _photos;
 
         public ReactiveCommand<PhotoGridItemViewModel, Unit> ItemClickCommand { get; }
+        public ReactiveCommand<Unit, Unit> SelectAllCommand { get; }
+        public ReactiveCommand<Unit, Unit> DeselectAllCommand { get; }
 
         #endregion
 
@@ -57,7 +60,12 @@ namespace Pixama.Logic.ViewModels.Photo
             MessageBus.Current.ListenIncludeLatest<LocationChanged>().Subscribe(OnLocationChanged);
 
             ItemClickCommand = ReactiveCommand.CreateFromTask<PhotoGridItemViewModel>(OnItemClickAsync);
+            SelectAllCommand = ReactiveCommand.Create(OnSelectAll);
+            DeselectAllCommand = ReactiveCommand.Create(OnDeselectAll);
         }
+
+        private void OnSelectAll() => MessageBus.Current.SendMessage(new SelectAllPhotos());
+        private void OnDeselectAll() => MessageBus.Current.SendMessage(new DeselectAllPhotos());
 
         private Task OnItemClickAsync(PhotoGridItemViewModel arg)
         {

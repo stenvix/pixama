@@ -15,7 +15,7 @@
     <StackPanel HorizontalAlignment="Stretch">
         <ListViewItem x:Name="LocationItem" MinHeight="30" HorizontalContentAlignment="Stretch">
             <interactivity:Interaction.Behaviors>
-                <core:EventTriggerBehavior EventName="PointerReleased">
+                <core:EventTriggerBehavior EventName="Tapped">
                     <core:InvokeCommandAction Command="{x:Bind ViewModel.ItemClickCommand}"/>
                 </core:EventTriggerBehavior>
             </interactivity:Interaction.Behaviors>
@@ -26,7 +26,13 @@
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <FontIcon x:Name="ExpandGlyph" Glyph="&#xE76C;" VerticalAlignment="Center" FontSize="14" />
+                <FontIcon x:Name="ExpandGlyph" Glyph="&#xE76C;" VerticalAlignment="Center" FontSize="14" >
+                    <interactivity:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="Tapped">
+                            <core:InvokeCommandAction Command="{x:Bind ViewModel.ExpandCommand}"/>
+                        </core:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
+                </FontIcon>
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
                     <FontIcon x:Name="Glyph" VerticalAlignment="Center" Glyph="&#xF12B;" FontSize="16" FontFamily="Segoe MDL2 Assets" Margin="0,0, 5,0"/>
                     <TextBlock x:Name="Name" Text="Placeholder" VerticalAlignment="Center" FontSize="12"/>
