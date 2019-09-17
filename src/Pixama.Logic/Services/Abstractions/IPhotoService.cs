@@ -9,7 +9,7 @@ namespace Pixama.Logic.Services
 {
     public interface IPhotoService
     {
-        Task GetFilesFromFolderAsync(StorageFolder storageFolder, SourceList<PhotoGridItemViewModel> items);
+        Task<bool> GetFilesFromFolderAsync(StorageFolder storageFolder, SourceList<PhotoGridItemViewModel> items);
         Task<BitmapImage> GetThumbnailAsync(StorageFile storageFile);
         Task<DateTime> GetDateTakenAsync(StorageFile storageFile);
     }

@@ -28,7 +28,12 @@
                     <FontIcon x:Name="Glyph" Glyph="&#xE88E;" VerticalAlignment="Center" FontSize="16" />
                     <TextBlock x:Name="DriveName" Text="Local Disk (D:\)" VerticalAlignment="Center"  FontSize="{ThemeResource ControlContentThemeFontSize}" Foreground="{ThemeResource ListViewItemForeground}"/>
                 </StackPanel>
-                <Button x:Name="ExpandButton" Grid.Column="1" Padding="8" CornerRadius="15" Background="Transparent" ClickMode="Press">
+                <Button x:Name="ExpandButton" Grid.Column="1" Padding="8" CornerRadius="15" Background="Transparent">
+                    <interactivity:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="Tapped">
+                            <core:InvokeCommandAction x:Name="ExpandInteraction" />
+                        </core:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
                     <FontIcon  x:Name="ExpandGlyph" Glyph="&#xE70D;" FontSize="12" HorizontalAlignment="Right"></FontIcon>
                 </Button>
                 <ProgressRing x:Name="IsLoading" Grid.Column="1" IsActive="True"/>

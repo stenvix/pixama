@@ -15,7 +15,7 @@
     <StackPanel HorizontalAlignment="Stretch">
         <ListViewItem x:Name="ListItem" HorizontalContentAlignment="Stretch">
             <interactivity:Interaction.Behaviors>
-                <core:EventTriggerBehavior EventName="PointerReleased">
+                <core:EventTriggerBehavior EventName="Tapped">
                     <core:InvokeCommandAction Command="{x:Bind ViewModel.ItemClickCommand}"/>
                 </core:EventTriggerBehavior>
             </interactivity:Interaction.Behaviors>
@@ -24,6 +24,7 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
+
                 <StackPanel Orientation="Horizontal">
                     <Button x:Name="FavoriteButton" Visibility="Collapsed" Padding="8" Margin="-8,0,7,0" CornerRadius="15" Background="Transparent" ClickMode="Release">
                         <FontIcon x:Name="FavoriteGlyph" Glyph="&#xE734;" VerticalAlignment="Center" FontSize="16"/>
@@ -32,7 +33,13 @@
                     <FontIcon x:Name="Glyph" Glyph="&#xE734;" VerticalAlignment="Center" FontSize="16" Margin="0,0,15,0"/>
                     <TextBlock x:Name="FolderName" Text="Local Disk (D:\)" VerticalAlignment="Center"  FontSize="{ThemeResource ControlContentThemeFontSize}" Foreground="{ThemeResource ListViewItemForeground}"/>
                 </StackPanel>
-                <Button x:Name="ExpandButton" Grid.Column="1" Padding="8" CornerRadius="15" Background="Transparent" ClickMode="Press">
+
+                <Button x:Name="ExpandButton" Grid.Column="1" Padding="8" CornerRadius="15" Background="Transparent">
+                    <interactivity:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="Tapped">
+                            <core:InvokeCommandAction x:Name="ExpandInteraction" />
+                        </core:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
                     <FontIcon  x:Name="ExpandGlyph" Glyph="&#xE70D;" FontSize="12" HorizontalAlignment="Right"></FontIcon>
                 </Button>
                 <ProgressRing x:Name="IsLoading" Grid.Column="1" IsActive="True"/>

@@ -32,6 +32,9 @@
         </Grid.RowDefinitions>
 
         <CommandBar x:Name="PhotoBar" Grid.Row="1" DefaultLabelPosition="Right">
+            <CommandBar.Content>
+                <TextBlock x:Name="Counter" Text="0 of 0" Margin="10,10"/>
+            </CommandBar.Content>
             <AppBarButton x:Name="SelectAllButton" Icon="Accept" Label="Select All" LabelPosition="Default"/>
             <AppBarButton x:Name="DeselectAllButton" Icon="Cancel" Label="Deselect All" LabelPosition="Default"/>
         </CommandBar>

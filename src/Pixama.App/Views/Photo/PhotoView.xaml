@@ -70,6 +70,9 @@
             </StackPanel>
         </ScrollViewer>
         <photo:PhotoGridView Grid.Column="1"/>
+        <ScrollViewer Grid.Column="2" BorderThickness="1, 0, 0, 0" BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}">
+
+        </ScrollViewer>
         <ProgressRing x:Name="ProgressRing" Grid.Column="0" Grid.ColumnSpan="3" Style="{StaticResource LoadingRing}"/>
     </Grid>
 </Page>
