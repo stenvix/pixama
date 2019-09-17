@@ -25,6 +25,7 @@ namespace Pixama.Logic.ViewModels.Photo
         private readonly ReadOnlyObservableCollection<DriveViewModel> _drives;
         private readonly ReadOnlyObservableCollection<FolderViewModel> _folders;
         private BaseLocationViewModel _selectedLocation;
+        private bool _isLoaded;
 
         #endregion
 
@@ -72,8 +73,10 @@ namespace Pixama.Logic.ViewModels.Photo
 
         public override async Task LoadAsync()
         {
+            if (_isLoaded) return;
             IsLoading = true;
             await _locationService.LoadFoldersAsync(_foldersList);
+            _isLoaded = true;
             IsLoading = false;
         }
 

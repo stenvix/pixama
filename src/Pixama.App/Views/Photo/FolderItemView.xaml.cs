@@ -73,7 +73,7 @@ namespace Pixama.App.Views.Photo
                 //Commands
                 this.BindCommand(ViewModel,
                         vm => vm.ExpandCommand,
-                        v => v.ExpandButton)
+                        v => v.ExpandInteraction)
                     .DisposeWith(disposable);
 
                 this.BindCommand(ViewModel,

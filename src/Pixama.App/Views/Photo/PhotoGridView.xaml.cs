@@ -4,6 +4,7 @@ using Pixama.Logic.ViewModels.Photo;
 using ReactiveUI;
 using System;
 using System.Reactive.Disposables;
+using Windows.ApplicationModel;
 using Windows.UI.Xaml.Data;
 
 namespace Pixama.App.Views.Photo
@@ -14,7 +15,9 @@ namespace Pixama.App.Views.Photo
         public PhotoGridView()
         {
             InitializeComponent();
-            ViewModel = ServiceLocator.Current.GetService<PhotoGridViewModel>();
+            if (DesignMode.DesignModeEnabled) ViewModel = new PhotoGridViewModel(null);
+            else ViewModel = ServiceLocator.Current.GetService<PhotoGridViewModel>();
+
             MessageBus.Current.Listen<SelectAllPhotos>().Subscribe(OnSelectAll);
             MessageBus.Current.Listen<DeselectAllPhotos>().Subscribe(OnDeselectAll);
 
@@ -45,6 +48,11 @@ namespace Pixama.App.Views.Photo
                         v => v.PhotoGrid.ItemsSource)
                     .DisposeWith(disposable);
 
+                this.OneWayBind(ViewModel,
+                        vm => vm.CounterText,
+                        v => v.Counter.Text)
+                    .DisposeWith(disposable);
+
                 this.BindCommand(ViewModel,
                         vm => vm.SelectAllCommand,
                         v => v.SelectAllButton)
@@ -53,6 +61,11 @@ namespace Pixama.App.Views.Photo
                 this.BindCommand(ViewModel,
                         vm => vm.DeselectAllCommand,
                         v => v.DeselectAllButton)
+                    .DisposeWith(disposable);
+
+                this.BindCommand(ViewModel,
+                        vm => vm.ItemClickCommand,
+                        v => v.PhotoGrid)
                     .DisposeWith(disposable);
             });
         }

@@ -75,6 +75,7 @@ namespace Pixama.Logic.ViewModels.Common
         private void OnItemClick(TappedRoutedEventArgs args)
         {
             MessageBus.Current.SendMessage(new LocationChanged(this));
+            args.Handled = true;
         }
     }
 }

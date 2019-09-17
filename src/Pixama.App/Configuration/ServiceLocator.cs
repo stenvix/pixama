@@ -31,6 +31,7 @@ namespace Pixama.App.Configuration
             builder.RegisterType<NavigationService>().AsImplementedInterfaces().SingleInstance();
             builder.RegisterType<LocationService>().AsImplementedInterfaces().SingleInstance();
             builder.RegisterType<PhotoService>().AsImplementedInterfaces().SingleInstance();
+            builder.RegisterType<DialogService>().AsImplementedInterfaces().SingleInstance();
 
             builder.RegisterType<ShellViewModel>().InstancePerLifetimeScope();
             builder.RegisterType<PhotoViewModel>().InstancePerLifetimeScope();

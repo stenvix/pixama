@@ -12,13 +12,21 @@ namespace Pixama.Logic.Services
 {
     public class PhotoService : IPhotoService
     {
+        private readonly IDialogService _dialogService;
+
         #region Fields
 
         private const int BatchSize = 1000;
+        private const int WarningSize = 200;
 
         #endregion
 
-        public async Task GetFilesFromFolderAsync(StorageFolder storageFolder, SourceList<PhotoGridItemViewModel> items)
+        public PhotoService(IDialogService dialogService)
+        {
+            _dialogService = dialogService;
+        }
+
+        public async Task<bool> GetFilesFromFolderAsync(StorageFolder storageFolder, SourceList<PhotoGridItemViewModel> items)
         {
 
             var queryOptions = new QueryOptions(CommonFileQuery.OrderByName, AppConstants.ImageFormats)
@@ -30,9 +38,10 @@ namespace Pixama.Logic.Services
             SetFileTypeFilter(queryOptions.FileTypeFilter);
             var query = storageFolder.CreateFileQueryWithOptions(queryOptions);
 
-            items.Clear();
             var filesCount = await query.GetItemCountAsync();
+            if (filesCount == 0 || filesCount > WarningSize && !await _dialogService.ManyFilesDialog()) return false;
             var counter = filesCount / BatchSize + 1;
+            items.Clear();
 
             for (int i = 0; i < counter; i++)
             {
@@ -51,6 +60,8 @@ namespace Pixama.Logic.Services
                     innerList.AddRange(gridItems);
                 });
             }
+
+            return true;
         }
 
         public async Task<BitmapImage> GetThumbnailAsync(StorageFile storageFile)

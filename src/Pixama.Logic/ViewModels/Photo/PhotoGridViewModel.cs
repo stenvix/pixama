@@ -1,14 +1,13 @@
 ﻿using DynamicData;
 using Pixama.Logic.Services;
+using Pixama.Logic.ViewModels.Common;
 using Pixama.Logic.ViewModels.Events;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.ServiceModel.Channels;
 using System.Threading.Tasks;
-using Pixama.Logic.ViewModels.Common;
 
 namespace Pixama.Logic.ViewModels.Photo
 {
@@ -21,6 +20,9 @@ namespace Pixama.Logic.ViewModels.Photo
         private readonly ReadOnlyObservableCollection<PhotoGridItemViewModel> _photos;
         private readonly ObservableAsPropertyHelper<bool> _freshLoading;
         private readonly ObservableAsPropertyHelper<bool> _sourceSelected;
+        private readonly ObservableAsPropertyHelper<int> _totalCount;
+        private readonly ObservableAsPropertyHelper<int> _selectedCount;
+        private readonly ObservableAsPropertyHelper<string> _counterText;
         private BaseLocationViewModel _sourceLocation;
 
         #endregion
@@ -29,6 +31,9 @@ namespace Pixama.Logic.ViewModels.Photo
 
         public bool FreshLoading => _freshLoading.Value;
         public bool SourceSelected => _sourceSelected.Value;
+        public int TotalCount => _totalCount.Value;
+        public int SelectedCount => _selectedCount.Value;
+        public string CounterText => _counterText.Value;
         public BaseLocationViewModel SourceLocation { get => _sourceLocation; set => this.RaiseAndSetIfChanged(ref _sourceLocation, value); }
         public ReadOnlyObservableCollection<PhotoGridItemViewModel> Photos => _photos;
 
@@ -48,6 +53,17 @@ namespace Pixama.Logic.ViewModels.Photo
                 .Bind(out _photos)
                 .Subscribe();
 
+            _photoList.CountChanged
+                .ToProperty(this, i => i.TotalCount, out _totalCount);
+
+            _photoList.Connect()
+                .AutoRefresh(i => i.IsChecked, TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(500))
+                .Filter(i => i.IsChecked)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .AsObservableList()
+                .CountChanged
+                .ToProperty(this, vm => vm.SelectedCount, out _selectedCount);
+
             this.WhenAnyValue(i => i.IsLoading, i => i.SourceLocation,
                     (isLoading, location) => !isLoading && location != null)
                 .ToProperty(this, x => x.SourceSelected, out _sourceSelected);
@@ -55,6 +71,9 @@ namespace Pixama.Logic.ViewModels.Photo
             this.WhenAnyValue(i => i.IsLoading, i => i.SourceSelected,
                     (isLoading, sourceSelected) => !isLoading && !sourceSelected)
                 .ToProperty(this, x => x.FreshLoading, out _freshLoading);
+
+            this.WhenAnyValue(i => i.SelectedCount, i => i.TotalCount, (selected, total) => $"{selected} of {total}")
+                .ToProperty(this, x => x.CounterText, out _counterText);
 
 
             MessageBus.Current.ListenIncludeLatest<LocationChanged>().Subscribe(OnLocationChanged);
@@ -64,8 +83,29 @@ namespace Pixama.Logic.ViewModels.Photo
             DeselectAllCommand = ReactiveCommand.Create(OnDeselectAll);
         }
 
-        private void OnSelectAll() => MessageBus.Current.SendMessage(new SelectAllPhotos());
-        private void OnDeselectAll() => MessageBus.Current.SendMessage(new DeselectAllPhotos());
+        private void OnSelectAll()
+        {
+            _photoList.Edit(list =>
+            {
+                foreach (var model in list)
+                {
+                    model.IsChecked = true;
+                }
+            });
+            MessageBus.Current.SendMessage(new SelectAllPhotos());
+        }
+
+        private void OnDeselectAll()
+        {
+            _photoList.Edit(list =>
+            {
+                foreach (var model in list)
+                {
+                    model.IsChecked = false;
+                }
+            });
+            MessageBus.Current.SendMessage(new DeselectAllPhotos());
+        }
 
         private Task OnItemClickAsync(PhotoGridItemViewModel arg)
         {
@@ -76,10 +116,18 @@ namespace Pixama.Logic.ViewModels.Photo
 
         private async void OnLocationChanged(LocationChanged args)
         {
-            if (args?.Location == null) return;
-            SourceLocation = args.Location;
+            if (args?.Location == null || SourceLocation != null && SourceLocation == args.Location) return;
+
             IsLoading = true;
-            await _photoService.GetFilesFromFolderAsync(args.Location.StorageFolder, _photoList);
+
+            if (await _photoService.GetFilesFromFolderAsync(args.Location.StorageFolder, _photoList))
+            {
+                SourceLocation = args.Location;
+            }
+            else
+            {
+                SourceLocation = null;
+            }
             IsLoading = false;
         }
     }
