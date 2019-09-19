@@ -8,7 +8,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Pixama.App.Views.Photo
 {
-    public class FolderItemViewBase : ReactiveUserControl<FolderViewModel> { }
+    public class FolderItemViewBase : ReactiveUserControl<SourceFolderViewModel> { }
     public sealed partial class FolderItemView : FolderItemViewBase
     {
         public FolderItemView()

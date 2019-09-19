@@ -121,6 +121,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AppConstants.cs" />
+    <Compile Include="Enums\LocationType.cs" />
+    <Compile Include="Helpers\Glyphs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Abstractions\IDialogService.cs" />
     <Compile Include="Services\Abstractions\IFrameAdapter.cs" />
@@ -134,13 +136,15 @@
     <Compile Include="Services\Implementations\PhotoService.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\Common\BaseLocationViewModel.cs" />
+    <Compile Include="ViewModels\Common\DestinationFolderViewModel.cs" />
     <Compile Include="ViewModels\Common\LocationViewModel.cs" />
     <Compile Include="ViewModels\Common\DriveViewModel.cs" />
-    <Compile Include="ViewModels\Common\FolderViewModel.cs" />
+    <Compile Include="ViewModels\Common\SourceFolderViewModel.cs" />
     <Compile Include="ViewModels\Events\ClearSelectionEvent.cs" />
     <Compile Include="ViewModels\Events\DeselectAllPhotos.cs" />
+    <Compile Include="ViewModels\Events\DestinationLocationRemoved.cs" />
     <Compile Include="ViewModels\Events\LocationChanged.cs" />
-    <Compile Include="ViewModels\Events\LocationRemoved.cs" />
+    <Compile Include="ViewModels\Events\SourceLocationRemoved.cs" />
     <Compile Include="ViewModels\Events\SelectAllPhotos.cs" />
     <Compile Include="ViewModels\Photo\PhotoGridItemViewModel.cs" />
     <Compile Include="ViewModels\Photo\PhotoGridViewModel.cs" />

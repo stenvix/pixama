@@ -1,4 +1,6 @@
 ﻿using DynamicData;
+using Pixama.Logic.Enums;
+using Pixama.Logic.Helpers;
 using Pixama.Logic.Services;
 using Pixama.Logic.ViewModels.Common;
 using Pixama.Logic.ViewModels.Events;
@@ -9,6 +11,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
+using Windows.Storage;
 using Windows.UI.Xaml.Input;
 
 namespace Pixama.Logic.ViewModels.Photo
@@ -21,9 +24,11 @@ namespace Pixama.Logic.ViewModels.Photo
         private readonly DeviceWatcher _devicesWatcher;
         private readonly ObservableAsPropertyHelper<bool> _hasRemovableDrives;
         private readonly SourceList<DriveViewModel> _drivesList;
-        private readonly SourceList<FolderViewModel> _foldersList;
+        private readonly SourceList<SourceFolderViewModel> _sourceFoldersList;
+        private readonly SourceList<DestinationFolderViewModel> _destinationFoldersList;
         private readonly ReadOnlyObservableCollection<DriveViewModel> _drives;
-        private readonly ReadOnlyObservableCollection<FolderViewModel> _folders;
+        private readonly ReadOnlyObservableCollection<SourceFolderViewModel> _sourceFolders;
+        private readonly ReadOnlyObservableCollection<DestinationFolderViewModel> _destinationFolders;
         private BaseLocationViewModel _selectedLocation;
         private bool _isLoaded;
 
@@ -33,11 +38,13 @@ namespace Pixama.Logic.ViewModels.Photo
 
         public bool HasRemovableDrive => _hasRemovableDrives.Value;
         public ReadOnlyObservableCollection<DriveViewModel> Drives => _drives;
-        public ReadOnlyObservableCollection<FolderViewModel> Folders => _folders;
+        public ReadOnlyObservableCollection<SourceFolderViewModel> SourceFolders => _sourceFolders;
+        public ReadOnlyObservableCollection<DestinationFolderViewModel> DestinationFolders => _destinationFolders;
 
         public BaseLocationViewModel SelectedLocation { get => _selectedLocation; set => this.RaiseAndSetIfChanged(ref _selectedLocation, value); }
 
-        public ReactiveCommand<PointerRoutedEventArgs, Unit> AddFolderCommand { get; }
+        public ReactiveCommand<TappedRoutedEventArgs, Unit> AddSourceFolderCommand { get; }
+        public ReactiveCommand<TappedRoutedEventArgs, Unit> AddDestinationFolderCommand { get; }
 
         #endregion
 
@@ -45,7 +52,8 @@ namespace Pixama.Logic.ViewModels.Photo
         {
             _locationService = locationService;
             _drivesList = new SourceList<DriveViewModel>();
-            _foldersList = new SourceList<FolderViewModel>();
+            _sourceFoldersList = new SourceList<SourceFolderViewModel>();
+            _destinationFoldersList = new SourceList<DestinationFolderViewModel>();
             _devicesWatcher = DeviceInformation.CreateWatcher(DeviceClass.PortableStorageDevice);
             _devicesWatcher.Added += OnDeviceChanged;
             _devicesWatcher.Removed += OnDeviceChanged;
@@ -62,30 +70,46 @@ namespace Pixama.Logic.ViewModels.Photo
                 .Select(i => i != 0)
                 .ToProperty(this, vm => vm.HasRemovableDrive, out _hasRemovableDrives);
 
-            _foldersList.Connect()
+            _sourceFoldersList.Connect()
                 .ObserveOn(RxApp.MainThreadScheduler)
-                .Bind(out _folders)
+                .Bind(out _sourceFolders)
                 .Subscribe();
 
-            AddFolderCommand = ReactiveCommand.CreateFromTask<PointerRoutedEventArgs>(AddFolderAsync);
-            MessageBus.Current.Listen<LocationRemoved>().Subscribe(OnLocationRemoved);
+            _destinationFoldersList.Connect()
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Bind(out _destinationFolders)
+                .Subscribe();
+
+            AddSourceFolderCommand = ReactiveCommand.CreateFromTask<TappedRoutedEventArgs>(AddSourceFolderAsync);
+            AddDestinationFolderCommand = ReactiveCommand.CreateFromTask<TappedRoutedEventArgs>(AddDestinationFolderAsync);
+            MessageBus.Current.Listen<SourceLocationRemoved>().Subscribe(OnSourceLocationRemoved);
+            MessageBus.Current.Listen<DestinationLocationRemoved>().Subscribe(OnDestinationLocationRemoved);
         }
 
         public override async Task LoadAsync()
         {
             if (_isLoaded) return;
             IsLoading = true;
-            await _locationService.LoadFoldersAsync(_foldersList);
+            await _locationService.LoadSourceFoldersAsync(_sourceFoldersList);
+            await _locationService.LoadDestinationFoldersAsync(_destinationFoldersList);
             _isLoaded = true;
             IsLoading = false;
         }
 
-        private async Task AddFolderAsync(PointerRoutedEventArgs args)
+        private async Task AddSourceFolderAsync(TappedRoutedEventArgs args)
+        {
+            var storageFolder = await _locationService.SelectStorageFolderAsync();
+            if (storageFolder == null) return;
+            if (!_locationService.SaveToFavorites(storageFolder, LocationType.Source)) return; //Todo: show duplication message box
+            AddSourceFolderToList(storageFolder);
+        }
+
+        private async Task AddDestinationFolderAsync(TappedRoutedEventArgs args)
         {
             var folder = await _locationService.SelectStorageFolderAsync();
             if (folder == null) return;
-            if (!_locationService.SaveToFavorites(folder)) return; //Todo: show duplication message box
-            await _locationService.LoadFolderAsync(folder, _foldersList);
+            if (!_locationService.SaveToFavorites(folder, LocationType.Destination)) return;
+            AddDestinationFolderToList(folder);
         }
 
         public void StartDevicesTracking()
@@ -103,9 +127,36 @@ namespace Pixama.Logic.ViewModels.Photo
             _devicesWatcher.Stop();
         }
 
-        private void OnLocationRemoved(LocationRemoved args)
+        private void OnSourceLocationRemoved(SourceLocationRemoved args)
         {
-            _foldersList.Remove(args.Location);
+            _sourceFoldersList.Remove(args.Location);
+        }
+
+        private void OnDestinationLocationRemoved(DestinationLocationRemoved args)
+        {
+            _destinationFoldersList.Remove(args.Location);
+        }
+
+        private void AddSourceFolderToList(StorageFolder storageFolder)
+        {
+            var model = new SourceFolderViewModel(_locationService)
+            {
+                Name = storageFolder.DisplayName,
+                Glyph = Glyphs.FolderGlyph,
+                StorageFolder = storageFolder
+            };
+            _sourceFoldersList.Add(model);
+        }
+
+        private void AddDestinationFolderToList(StorageFolder storageFolder)
+        {
+            var model = new DestinationFolderViewModel(_locationService)
+            {
+                Name = storageFolder.DisplayName,
+                Glyph = Glyphs.FolderGlyph,
+                StorageFolder = storageFolder
+            };
+            _destinationFoldersList.Add(model);
         }
     }
 }

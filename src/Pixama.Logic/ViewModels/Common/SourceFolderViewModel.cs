@@ -1,4 +1,5 @@
-﻿using Pixama.Logic.Services;
+﻿using Pixama.Logic.Enums;
+using Pixama.Logic.Services;
 using Pixama.Logic.ViewModels.Events;
 using ReactiveUI;
 using System.Reactive;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Pixama.Logic.ViewModels.Common
 {
-    public class FolderViewModel : BaseLocationViewModel
+    public class SourceFolderViewModel : BaseLocationViewModel
     {
 
         #region Fields
@@ -26,9 +27,9 @@ namespace Pixama.Logic.ViewModels.Common
 
         #endregion
 
-        public FolderViewModel(ILocationService locationService) : base(locationService)
+        public SourceFolderViewModel(ILocationService locationService) : base(locationService)
         {
-            FavoriteClickCommand = ReactiveCommand.CreateFromTask<Unit>(OnFavoriteClick);
+            FavoriteClickCommand = ReactiveCommand.Create(OnFavoriteClick);
             this.WhenAnyValue(i => i.IsStatic)
                 .Select(i => !i)
                 .ToProperty(this, i => i.IsDynamic, out _isDynamic);
@@ -42,10 +43,10 @@ namespace Pixama.Logic.ViewModels.Common
             IsLoading = false;
         }
 
-        private async Task OnFavoriteClick(Unit unit)
+        protected virtual void OnFavoriteClick()
         {
-            if (!LocationService.RemoveFromFavoritesAsync(StorageFolder)) return; //Todo: show warning message
-            MessageBus.Current.SendMessage(new LocationRemoved(this));
+            if (!LocationService.RemoveFromFavoritesAsync(StorageFolder, LocationType.Source)) return; //Todo: show warning message
+            MessageBus.Current.SendMessage(new SourceLocationRemoved(this));
         }
 
         private string GetExpandGlyph()

@@ -77,6 +77,7 @@ namespace Pixama.Logic.ViewModels.Photo
 
 
             MessageBus.Current.ListenIncludeLatest<LocationChanged>().Subscribe(OnLocationChanged);
+            MessageBus.Current.Listen<SourceLocationRemoved>().Subscribe(OnSourceLocationRemoved);
 
             ItemClickCommand = ReactiveCommand.CreateFromTask<PhotoGridItemViewModel>(OnItemClickAsync);
             SelectAllCommand = ReactiveCommand.Create(OnSelectAll);
@@ -129,6 +130,16 @@ namespace Pixama.Logic.ViewModels.Photo
                 SourceLocation = null;
             }
             IsLoading = false;
+        }
+
+        private void OnSourceLocationRemoved(SourceLocationRemoved args)
+        {
+            if (args?.Location == null) return;
+            if (SourceLocation.StorageFolder.Path.Contains(args.Location.StorageFolder.Path))
+            {
+                SourceLocation = null;
+                _photoList.Clear();
+            }
         }
     }
 }

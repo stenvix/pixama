@@ -2,10 +2,8 @@ using Pixama.App.Configuration;
 using Pixama.Logic.ViewModels.Photo;
 using ReactiveUI;
 using System.Reactive.Disposables;
-using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Microsoft.Toolkit.Uwp.Helpers;
 
 namespace Pixama.App.Views.Photo
 {
@@ -59,8 +57,13 @@ namespace Pixama.App.Views.Photo
                     .DisposeWith(disposable);
 
                 this.OneWayBind(ViewModel,
-                        vm => vm.Folders,
+                        vm => vm.SourceFolders,
                         v => v.Folders.ItemsSource)
+                    .DisposeWith(disposable);
+
+                this.OneWayBind(ViewModel,
+                        vm => vm.DestinationFolders,
+                        v => v.DestinationFolders.ItemsSource)
                     .DisposeWith(disposable);
 
                 this.OneWayBind(ViewModel,
@@ -77,8 +80,13 @@ namespace Pixama.App.Views.Photo
                     .DisposeWith(disposable);
 
                 this.BindCommand(ViewModel,
-                    vm => vm.AddFolderCommand,
-                    v => v.AddFolderAction)
+                    vm => vm.AddSourceFolderCommand,
+                    v => v.AddSourceFolderInteraction)
+                    .DisposeWith(disposable);
+
+                this.BindCommand(ViewModel,
+                        vm => vm.AddDestinationFolderCommand,
+                        v => v.AddDestinationFolderInteraction)
                     .DisposeWith(disposable);
             });
         }
