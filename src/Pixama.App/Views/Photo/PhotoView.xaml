@@ -10,6 +10,23 @@
     xmlns:common="using:Pixama.Logic.ViewModels.Common"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.Resources>
+        <Style x:Name="SectionTitle" TargetType="TextBlock">
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+        </Style>
+
+        <Style x:Name="AddIcon" TargetType="FontIcon">
+            <Setter Property="Glyph" Value="&#xE710;"/>
+            <Setter Property="FontSize" Value="16"/>
+            <!--FontSize="16" Glyph="&#xE710;" FontFamily="Segoe MDL2 Assets"-->
+        </Style>
+        <Style x:Name="AddText" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+    </Page.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -18,9 +35,9 @@
             <ColumnDefinition Width="225"/>
         </Grid.ColumnDefinitions>
 
-        <ScrollViewer VerticalScrollBarVisibility="Auto" VerticalAlignment="Stretch">
-            <StackPanel x:Name="Sidebar" BorderThickness="0, 0, 1, 0"  BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}">
-                <TextBlock Margin="10" Text="Locations" FontSize="14" FontWeight="Bold" Padding="0" VerticalAlignment="Stretch"/>
+        <ScrollViewer x:Name="LeftSidebar" VerticalScrollBarVisibility="Auto" VerticalAlignment="Stretch">
+            <StackPanel BorderThickness="0, 0, 1, 0"  BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}">
+                <TextBlock Style="{StaticResource SectionTitle}" Text="Source Locations" />
 
                 <ItemsControl x:Name="Folders">
                     <ItemsControl.ItemsPanel>
@@ -46,12 +63,12 @@
                         </core:EventTriggerBehavior>
                     </interactivity:Interaction.Behaviors>
                     <StackPanel Spacing="15" Orientation="Horizontal">
-                        <FontIcon FontSize="16" Glyph="&#xE710;" FontFamily="Segoe MDL2 Assets"/>
-                        <TextBlock Text="Add Folder" FontSize="12"/>
+                        <FontIcon Style="{StaticResource AddIcon}"/>
+                        <TextBlock Style="{StaticResource AddText}" Text="Add Folder" />
                     </StackPanel>
                 </ListViewItem>
 
-                <TextBlock x:Name="DrivesLabel" Margin="10" Text="Drives" FontSize="14" FontWeight="Bold" Padding="0" VerticalAlignment="Stretch"/>
+                <TextBlock x:Name="DrivesLabel" Style="{StaticResource SectionTitle}" Text="Drives" />
 
                 <ItemsControl x:Name="Drives">
                     <ItemsControl.ItemsPanel>
@@ -69,9 +86,23 @@
                 </ItemsControl>
             </StackPanel>
         </ScrollViewer>
-        <photo:PhotoGridView Grid.Column="1"/>
-        <ScrollViewer Grid.Column="2" BorderThickness="1, 0, 0, 0" BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}">
-
+        <photo:PhotoGridView x:Name="PhotoGrid" Grid.Column="1"/>
+        <ScrollViewer x:Name="RightSidebar" Grid.Column="2" BorderThickness="1, 0, 0, 0" BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}">
+            <StackPanel>
+                <TextBlock Style="{StaticResource SectionTitle}" Text="Destination Locations"></TextBlock>
+                <NavigationViewItemSeparator />
+                <ListViewItem>
+                    <interactivity:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="Tapped">
+                            <core:InvokeCommandAction x:Name="AddDestinationFolderInteraction"></core:InvokeCommandAction>
+                        </core:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
+                    <StackPanel Spacing="15" Orientation="Horizontal">
+                        <FontIcon Style="{StaticResource AddIcon}" />
+                        <TextBlock Style="{StaticResource AddText}" Text="Add Folder" />
+                    </StackPanel>
+                </ListViewItem>
+            </StackPanel>
         </ScrollViewer>
         <ProgressRing x:Name="ProgressRing" Grid.Column="0" Grid.ColumnSpan="3" Style="{StaticResource LoadingRing}"/>
     </Grid>
