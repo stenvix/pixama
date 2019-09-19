@@ -46,7 +46,7 @@
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="common:FolderViewModel">
+                        <DataTemplate x:DataType="common:SourceFolderViewModel">
                             <Grid>
                                 <photo:FolderItemView  ViewModel="{x:Bind}" />
                             </Grid>
@@ -58,8 +58,8 @@
 
                 <ListViewItem>
                     <interactivity:Interaction.Behaviors>
-                        <core:EventTriggerBehavior EventName="PointerReleased">
-                            <core:InvokeCommandAction x:Name="AddFolderAction"></core:InvokeCommandAction>
+                        <core:EventTriggerBehavior EventName="Tapped">
+                            <core:InvokeCommandAction x:Name="AddSourceFolderInteraction"></core:InvokeCommandAction>
                         </core:EventTriggerBehavior>
                     </interactivity:Interaction.Behaviors>
                     <StackPanel Spacing="15" Orientation="Horizontal">
@@ -89,7 +89,21 @@
         <photo:PhotoGridView x:Name="PhotoGrid" Grid.Column="1"/>
         <ScrollViewer x:Name="RightSidebar" Grid.Column="2" BorderThickness="1, 0, 0, 0" BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}">
             <StackPanel>
-                <TextBlock Style="{StaticResource SectionTitle}" Text="Destination Locations"></TextBlock>
+                <TextBlock Style="{StaticResource SectionTitle}" Text="Destination Locations" />
+                <ItemsControl x:Name="DestinationFolders">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="common:DestinationFolderViewModel">
+                            <Grid>
+                                <photo:DestinationLocationItemView  ViewModel="{x:Bind}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
                 <NavigationViewItemSeparator />
                 <ListViewItem>
                     <interactivity:Interaction.Behaviors>
