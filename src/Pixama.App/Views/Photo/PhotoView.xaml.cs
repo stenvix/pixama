@@ -1,9 +1,11 @@
-﻿using Pixama.App.Configuration;
+using Pixama.App.Configuration;
 using Pixama.Logic.ViewModels.Photo;
 using ReactiveUI;
 using System.Reactive.Disposables;
+using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Microsoft.Toolkit.Uwp.Helpers;
 
 namespace Pixama.App.Views.Photo
 {
@@ -43,7 +45,17 @@ namespace Pixama.App.Views.Photo
 
                 this.OneWayBind(ViewModel,
                         vm => vm.IsReady,
-                        v => v.Sidebar.Visibility)
+                        v => v.LeftSidebar.Visibility)
+                    .DisposeWith(disposable);
+
+                this.OneWayBind(ViewModel,
+                        vm => vm.IsReady,
+                        v => v.PhotoGrid.Visibility)
+                    .DisposeWith(disposable);
+
+                this.OneWayBind(ViewModel,
+                        vm => vm.IsReady,
+                        v => v.RightSidebar.Visibility)
                     .DisposeWith(disposable);
 
                 this.OneWayBind(ViewModel,
