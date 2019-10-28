@@ -63,9 +63,9 @@ namespace Pixama.App.Views.Photo
                         v => v.DeselectAllButton)
                     .DisposeWith(disposable);
 
-                this.BindCommand(ViewModel,
+                this.OneWayBind(ViewModel,
                         vm => vm.ItemClickCommand,
-                        v => v.PhotoGrid)
+                        v => v.PhotoGrid.ItemClickCommand)
                     .DisposeWith(disposable);
             });
         }

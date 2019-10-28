@@ -110,6 +110,7 @@ namespace Pixama.Logic.ViewModels.Photo
 
         private Task OnItemClickAsync(PhotoGridItemViewModel arg)
         {
+            if (arg == null) return Task.CompletedTask;
             arg.IsChecked = !arg.IsChecked;
             return Task.CompletedTask;
         }
