@@ -21,11 +21,6 @@
             <NavigationView.PaneHeader>
                 <NavigationViewItemHeader Content="PIXAMA"/>
             </NavigationView.PaneHeader>
-            <NavigationView.MenuItemTemplate>
-                <DataTemplate x:DataType="shell:ShellMenuItemViewModel">
-                    <NavigationViewItem Content="{Binding Name}"/>
-                </DataTemplate>
-            </NavigationView.MenuItemTemplate>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"></RowDefinition>

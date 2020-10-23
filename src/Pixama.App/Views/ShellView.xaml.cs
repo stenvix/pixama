@@ -35,18 +35,9 @@ namespace Pixama.App.Views
             InitializeComponent();
             ViewModel = ServiceLocator.Current.GetService<ShellViewModel>();
             InitializeNavigation();
-
-            this.WhenActivated(disposable =>
+            this.WhenActivated(async disposable =>
             {
-                this.OneWayBind(ViewModel,
-                        vm => vm.MenuItems,
-                        v => v.Navigation.MenuItemsSource)
-                    .DisposeWith(disposable);
-
-                this.Bind(ViewModel,
-                        vm => vm.SelectedTab,
-                        v => v.Navigation.SelectedItem)
-                    .DisposeWith(disposable);
+                await ViewModel.SetMainPage();
             });
         }
 
