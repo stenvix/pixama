@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Pixama.Logic.Services;
-using Pixama.Logic.ViewModels.Photo;
+using Pixama.Logic.ViewModels.Pages;
 
 namespace Pixama.Logic.ViewModels.Shell
 {
@@ -15,7 +15,7 @@ namespace Pixama.Logic.ViewModels.Shell
 
         public async Task SetMainPage()
         {
-            await _navigation.NavigateTo<PhotoViewModel>();
+            await _navigation.NavigateTo<SourcePageViewModel>();
         }
     }
 }

@@ -9,6 +9,8 @@ using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using Pixama.App.Views.Pages;
+using Pixama.Logic.ViewModels.Pages;
 
 namespace Pixama.App
 {
@@ -105,6 +107,7 @@ namespace Pixama.App
         {
             NavigationService.Register<PhotoViewModel, Photo>();
             NavigationService.Register<VideoViewModel, Video>();
+            NavigationService.Register<SourcePageViewModel, SourcePage>();
         }
     }
 }
