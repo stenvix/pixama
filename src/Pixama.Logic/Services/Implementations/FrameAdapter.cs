@@ -15,7 +15,7 @@ namespace Pixama.Logic.Services
         public bool Navigate(Type pageType, object parameters)
         {
             //TODO: Add animation
-            return _internalFrame.Navigate(pageType, pageType);
+            return _internalFrame.Navigate(pageType, parameters);
         }
 
         public bool CanNavigate => _internalFrame != null;
