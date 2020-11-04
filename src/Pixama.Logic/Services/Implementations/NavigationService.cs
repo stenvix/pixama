@@ -40,16 +40,26 @@ namespace Pixama.Logic.Services
 
         public Task<bool> NavigateTo<TViewModel>()
         {
-            return NavigateTo<TViewModel>(null);
+            return NavigateTo(typeof(TViewModel), null);
         }
 
-        public async Task<bool> NavigateTo<TViewModel>(object parameters)
+        public Task<bool> NavigateTo<TViewModel>(object parameters)
+        {
+            return NavigateTo(typeof(TViewModel), parameters);
+        }
+
+        public Task<bool> NavigateTo(Type viewModel)
+        {
+            return NavigateTo(viewModel, null);
+        }
+
+        public async Task<bool> NavigateTo(Type viewModel, object parameters)
         {
             if (!_frameAdapter.CanNavigate) return false;
             var navigated = false;
             await Window.Current.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
              {
-                 navigated = _frameAdapter.Navigate(GetView(typeof(TViewModel)), parameters);
+                 navigated = _frameAdapter.Navigate(GetView(viewModel), parameters);
              });
             return navigated;
         }

@@ -6,6 +6,7 @@ using Pixama.Logic.ViewModels.Photo;
 using System;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -99,7 +100,7 @@ namespace Pixama.App
             if (!initPage) return;
             _shell = new Shell();
 
-            Window.Current.Content = _shell;
+            Window.Current.Content = new LayoutView();
             Window.Current.Activate();
         }
 

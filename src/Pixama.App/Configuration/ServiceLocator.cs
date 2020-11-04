@@ -4,6 +4,7 @@ using Pixama.Logic.ViewModels.Photo;
 using Pixama.Logic.ViewModels.Shell;
 using System.Collections.Concurrent;
 using Windows.UI.ViewManagement;
+using Pixama.Logic.ViewModels;
 using Pixama.Logic.ViewModels.Pages;
 
 namespace Pixama.App.Configuration
@@ -38,6 +39,8 @@ namespace Pixama.App.Configuration
             builder.RegisterType<PhotoViewModel>().InstancePerLifetimeScope();
             builder.RegisterType<PhotoGridViewModel>().InstancePerLifetimeScope();
             builder.RegisterType<SourcePageViewModel>().InstancePerLifetimeScope();
+            builder.RegisterType<LayoutViewModel>().InstancePerLifetimeScope();
+
             _container = builder.Build();
         }
 

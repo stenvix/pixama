@@ -146,6 +146,8 @@
     <Compile Include="ViewModels\Events\LocationChanged.cs" />
     <Compile Include="ViewModels\Events\SourceLocationRemoved.cs" />
     <Compile Include="ViewModels\Events\SelectAllPhotos.cs" />
+    <Compile Include="ViewModels\LayoutMenuItemViewModel.cs" />
+    <Compile Include="ViewModels\LayoutViewModel.cs" />
     <Compile Include="ViewModels\Pages\SourcePageViewModel.cs" />
     <Compile Include="ViewModels\Photo\PhotoGridItemViewModel.cs" />
     <Compile Include="ViewModels\Photo\PhotoGridViewModel.cs" />
